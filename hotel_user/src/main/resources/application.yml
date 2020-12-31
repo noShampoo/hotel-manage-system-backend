@@ -1,0 +1,6 @@
+server:
+  port: 9001
+jwt:
+  config:
+    key: xust7202nbxustsbwygz
+    ttl: 9999999999999

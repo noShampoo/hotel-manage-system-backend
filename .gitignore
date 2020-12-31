@@ -29,3 +29,5 @@
 hs_err_pid*
 hotel_common/src/test/
 hotel_common/target/
+hotel_user/src/test/
+hotel_user/target/
