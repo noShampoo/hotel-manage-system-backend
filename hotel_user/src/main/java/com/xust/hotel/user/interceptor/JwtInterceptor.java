@@ -1,6 +1,7 @@
 package com.xust.hotel.user.interceptor;
 
 import com.xust.hotel.common.dto.LoginUserDTO;
+import com.xust.hotel.common.exception.ExpiredException;
 import com.xust.hotel.common.security.CryptUtil;
 import com.xust.hotel.common.security.JwtConstantConfig;
 import com.xust.hotel.common.security.JwtUtil;
@@ -50,6 +51,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 String redisAuth = String.valueOf(redisTemplate.opsForValue().get(loginUserDTO.getUser()));
                 if (StringUtils.isBlank(redisAuth)) {
                     //抛过期异常
+                    throw new ExpiredException("permission expired");
                 }
                 if (!header.equals(redisAuth)) {
                     log.error("preHandle, header auth info is different from redis auth info" +
