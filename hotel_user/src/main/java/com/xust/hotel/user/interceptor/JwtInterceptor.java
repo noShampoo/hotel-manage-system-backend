@@ -1,6 +1,6 @@
 package com.xust.hotel.user.interceptor;
 
-import com.xust.hotel.common.dto.LoginUserDTO;
+import com.xust.hotel.common.dto.LoginUserPojo;
 import com.xust.hotel.common.exception.ExpiredException;
 import com.xust.hotel.common.security.CryptUtil;
 import com.xust.hotel.common.security.JwtConstantConfig;
@@ -43,7 +43,7 @@ public class JwtInterceptor implements HandlerInterceptor {
             try {
                 token = token.substring(JwtConstantConfig.SUB_START_NUM);
                 token = token.substring(0, token.length() - JwtConstantConfig.SUB_END_NUM);
-                LoginUserDTO loginUserDTO = jwtUtil.getLoginUserDTO(token);
+                LoginUserPojo loginUserDTO = jwtUtil.getLoginUserDTO(token);
                 if (loginUserDTO == null) {
                     log.error("preHandle, there are no user info, loginUserDTO is null");
                     return true;

@@ -1,7 +1,7 @@
 package com.xust.hotel.common.restful;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xust.hotel.common.dto.BaseDTO;
+import com.xust.hotel.common.dto.BasePojo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PageResult<T> extends BaseDTO {
+public class PageResult<T> extends BasePojo {
     private static final long serialVersionUID = -694738051259047931L;
 
     /**

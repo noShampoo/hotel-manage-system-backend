@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @Builder
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class LoginUserDTO extends BaseDTO {
+public class LoginUserPojo extends BasePojo {
     private static final long serialVersionUID = -1110936828440609618L;
 
     /**

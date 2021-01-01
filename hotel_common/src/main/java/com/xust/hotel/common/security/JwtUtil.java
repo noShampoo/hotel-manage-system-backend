@@ -1,6 +1,6 @@
 package com.xust.hotel.common.security;
 
-import com.xust.hotel.common.dto.LoginUserDTO;
+import com.xust.hotel.common.dto.LoginUserPojo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -57,9 +57,9 @@ public class JwtUtil {
      * @param token token
      * @return user info
      */
-    public LoginUserDTO getLoginUserDTO(String token) {
+    public LoginUserPojo getLoginUserDTO(String token) {
         Claims claims = parseJwt(token);
-        return LoginUserDTO.builder()
+        return LoginUserPojo.builder()
                 .user(String.valueOf(claims.get("jti")))
                 .password(String.valueOf(claims.get("sub")))
                 .roles(String.valueOf(claims.get("roles")))
