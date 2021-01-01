@@ -1,6 +1,7 @@
 package com.xust.hotel.user.service.impl;
 
 import com.xust.hotel.common.UniversalConstant;
+import com.xust.hotel.common.exception.ExpiredException;
 import com.xust.hotel.common.exception.InnerErrorException;
 import com.xust.hotel.user.mapper.UserMapper;
 import com.xust.hotel.user.pojo.UserDO;
@@ -8,6 +9,7 @@ import com.xust.hotel.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public boolean matchUserToPass(String user, String password) throws InnerErrorException {
@@ -40,7 +45,7 @@ public class UserServiceImpl implements UserService {
                 log.error("matchUserToPass, query result password is null.");
                 return false;
             }
-            return bCryptPasswordEncoder.matches(user, userDO.getPassword());
+            return bCryptPasswordEncoder.matches(password, userDO.getPassword());
         } catch (Exception e) {
             log.error("matchUserToPass occur exception.");
             throw new InnerErrorException(e);
@@ -63,6 +68,27 @@ public class UserServiceImpl implements UserService {
                     .build();
             int i = userMapper.insertDynamic(userDO);
             return i == 1;
+        } catch (Exception e) {
+            log.error("registerAdmin occur exception");
+            throw new InnerErrorException(e);
+        }
+    }
+
+    @Override
+    public boolean logout(String user, String password) throws Exception {
+        try {
+            if (StringUtils.isBlank(user) || StringUtils.isBlank(password)) {
+                log.error("registerAdmin, param error.user={}, password={}", user, password);
+                return false;
+            }
+            if (!matchUserToPass(user, password)) {
+                log.error("logout, match fail.user={}, password={}", user, password);
+                return false;
+            }
+            if (StringUtils.isBlank(redisTemplate.opsForValue().get(user))) {
+                return true;
+            }
+            return redisTemplate.delete(user);
         } catch (Exception e) {
             log.error("registerAdmin occur exception");
             throw new InnerErrorException(e);

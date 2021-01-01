@@ -24,4 +24,13 @@ public interface UserService {
      * @return
      */
     public boolean registerAdmin(String user, String password) throws InnerErrorException;
+
+    /**
+     * log out
+     * @param user
+     * @param password
+     * @throws Exception
+     * @return
+     */
+    public boolean logout(String user, String password) throws Exception;
 }

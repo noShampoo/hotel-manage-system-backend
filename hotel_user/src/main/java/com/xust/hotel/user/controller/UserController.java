@@ -106,4 +106,29 @@ public class UserController {
         return new Result(true, StatusEnum.OK, null, map);
     }
 
+    @PostMapping("/login/out")
+    public Result logout(@RequestBody RequestParam<Map<String, String>> requestParam) throws Exception {
+        if (requestParam == null || MapUtils.isEmpty(requestParam.getData())) {
+            log.error("login, param is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "param is null", null);
+        }
+        Map<String, String> data = requestParam.getData();
+        String user = data.get("user");
+        String password = data.get("password");
+        String type = data.get("type");
+        if (StringUtils.isBlank(user) || StringUtils.isBlank(password) || StringUtils.isBlank(type)) {
+            log.error("login, param is null.user={}, password={}, type={}", user, password, type);
+            return new Result(true, StatusEnum.PARAM_ERROR, "data error", null);
+        }
+        if (!type.equals(JwtConstantConfig.USER_ROLE_NORMAL) && !type.equals(JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("login, type error.type={}", type);
+            return new Result(true, StatusEnum.PARAM_ERROR, "type error", null);
+        }
+        if (!userService.logout(user, password)) {
+            log.error("login, match fail.user={}, password={}", user, password);
+            return new Result(true, StatusEnum.LOGIN_ERROR, null, null);
+        }
+        return new Result(true, StatusEnum.OK, null, null);
+    }
+
 }
