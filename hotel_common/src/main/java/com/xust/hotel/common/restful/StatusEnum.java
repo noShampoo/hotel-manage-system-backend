@@ -44,7 +44,15 @@ public enum StatusEnum {
      */
     PARAM_ERROR(20006, "参数错误"),
 
-    EXPIRED_ERROR(20007, "权限过期")
+    /**
+     * 权限过期
+     */
+    EXPIRED_ERROR(20007, "权限过期"),
+
+    /**
+     * inner error
+     */
+    INNER_ERROR(50000, "内部异常")
     ;
 
     /**

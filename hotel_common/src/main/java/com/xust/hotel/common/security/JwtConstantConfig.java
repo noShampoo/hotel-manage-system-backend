@@ -21,4 +21,8 @@ public class JwtConstantConfig {
 
     public static final String REQ_ATTRIBUTE_KEY = "login-info";
 
+    public static final String REGISTER_ADMIN_HEADER_KEY = "Admin7202";
+
+    public static final String REGISTER_ADMIN_HEADER_VALUE = HEADER_TOKEN_START + HEADER_TOKEN_END;
+
 }

@@ -3,6 +3,7 @@ package com.xust.hotel.user.mapper;
 
 import com.xust.hotel.user.pojo.UserDO;
 import com.xust.hotel.user.pojo.UserDTO;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 /**
  * @author bhj
  */
+@Mapper
 @Repository
 public interface UserMapper {
 
@@ -55,6 +57,13 @@ public interface UserMapper {
      * @return
      */
     UserDO selectById(Integer id);
+
+    /**
+     * select by user
+     * @param user
+     * @return
+     */
+    UserDO selectByUser(String user);
 
     /**
      * page query

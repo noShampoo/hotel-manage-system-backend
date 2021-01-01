@@ -1,6 +1,7 @@
 package com.xust.hotel.user.interceptor;
 
 import com.xust.hotel.common.exception.ExpiredException;
+import com.xust.hotel.common.exception.InnerErrorException;
 import com.xust.hotel.common.restful.Result;
 import com.xust.hotel.common.restful.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -20,5 +21,12 @@ public class BaseExceptionHandle {
     public Result expired(ExpiredException e) {
         log.error("expired, ExpiredException msg={}, e={}", e.getMessage(), e);
         return new Result(true, StatusEnum.EXPIRED_ERROR, e.getMessage(), null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = InnerErrorException.class)
+    public Result inner(ExpiredException e) {
+        log.error("inner, server inner error.msg={}, e={}", e.getMessage(), e);
+        return new Result(false, StatusEnum.INNER_ERROR, e.getMessage(), null);
     }
 }

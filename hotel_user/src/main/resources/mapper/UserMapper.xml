@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xust.hotel.user.mapper.UserMapper">
 
-    <resultMap id="BaseResultMap" type="com.xust.hotel.user.entity.User">
+    <resultMap id="BaseResultMap" type="com.xust.hotel.user.pojo.UserDO">
         <id column="id" jdbcType="INTEGER" property="id" />
         <result column="user" jdbcType="VARCHAR" property="user" />
         <result column="name" jdbcType="VARCHAR" property="name" />
@@ -24,7 +24,7 @@
     </delete>
 
 
-    <insert id="insert" parameterType="com.xust.hotel.user.entity.User">
+    <insert id="insert" parameterType="com.xust.hotel.user.pojo.UserDO">
         insert into user (id, user, name,
                           password, type, status,
                           feature)
@@ -34,7 +34,7 @@
     </insert>
 
 
-    <insert id="insertDynamic" parameterType="com.xust.hotel.user.entity.User">
+    <insert id="insertDynamic" parameterType="com.xust.hotel.user.pojo.UserDO">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -85,7 +85,7 @@
     </insert>
 
 
-    <update id="updateDynamic" parameterType="com.xust.hotel.user.entity.User">
+    <update id="updateDynamic" parameterType="com.xust.hotel.user.pojo.UserDO">
         update user
         <set>
             <if test="user != null">
@@ -111,7 +111,7 @@
     </update>
 
 
-    <update id="update" parameterType="com.xust.hotel.user.entity.User">
+    <update id="update" parameterType="com.xust.hotel.user.pojo.UserDO">
         update user
         set user = #{user,jdbcType=VARCHAR},
             name = #{name,jdbcType=VARCHAR},
@@ -130,9 +130,15 @@
         where id = #{id,jdbcType=INTEGER}
     </select>
 
+    <select id="selectByUser" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from  user
+        where user = #{user,jdbcType=VARCHAR}
+    </select>
 
     <sql id="findPageWithWhere">
-        <where> 1=1
+        <where>
             <if test="id != null" >
                 and id = #{id,jdbcType=INTEGER}
             </if>
@@ -158,16 +164,17 @@
     </sql>
 
 
-    <select id="findPageWithResult" parameterType="com.xust.hotel.user.dto.UserDTO" resultMap="BaseResultMap">
+    <select id="findPageWithResult" parameterType="com.xust.hotel.user.pojo.UserDTO"
+            resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from  user
         <include refid="findPageWithWhere" />
-        limit #{start},#{pageSize}
+        limit #{page},#{pageSize}
     </select>
 
 
-    <select id="findPageWithCount" parameterType="com.xust.hotel.user.dto.UserDTO" resultType="Integer">
+    <select id="findPageWithCount" parameterType="com.xust.hotel.user.pojo.UserDTO" resultType="Integer">
         select count(1)
         from user
         <include refid="findPageWithWhere" />
