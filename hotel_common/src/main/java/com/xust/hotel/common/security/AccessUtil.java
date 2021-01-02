@@ -15,6 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class AccessUtil {
 
+    /**
+     * check
+     * @param request
+     * @param tarAccess
+     * @return
+     * @throws InnerErrorException
+     */
     public static boolean checkAccess(HttpServletRequest request, String... tarAccess) throws InnerErrorException {
         try {
 
@@ -32,6 +39,7 @@ public class AccessUtil {
                 return false;
             }
             for (String access : tarAccess) {
+                log.info("checkAccess, access={}, login={}", access, loginUserPojo.getRoles());
                 if (access.equals(loginUserPojo.getRoles())) {
                     return true;
                 }

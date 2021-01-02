@@ -169,7 +169,7 @@ public class UserController {
             return new Result(true, StatusEnum.ERROR, null, null);
         }
         if (StringUtils.isBlank(userDTO.getUser()) || StringUtils.isBlank(userDTO.getName())
-                || StringUtils.isBlank(userDTO.getPassword()) || StringUtils.isBlank(userDTO.getType())) {
+                || StringUtils.isBlank(userDTO.getType())) {
             log.error("add, result error.userDTO={}", userDTO.toString());
             return new Result(true, StatusEnum.ERROR, null, null);
         }
@@ -279,5 +279,40 @@ public class UserController {
         }
         List<UserVO> userVOList = userService.queryUser(name, page, size);
         return new Result(true, StatusEnum.OK, null, userVOList);
+    }
+
+    /**
+     * normal user modify himself
+     */
+    @PostMapping("/normal/modify")
+    public Result normalModify(@RequestBody RequestParam<Map<String, String>>requestParam,
+                               HttpServletRequest request) throws InnerErrorException {
+        if (requestParam == null || MapUtils.isEmpty(requestParam.getData())) {
+            log.error("normalModify, param is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "param is null", null);
+        }
+        Map<String, String> data = requestParam.getData();
+        String name = data.get("name");
+        String password = data.get("password");
+        String user = data.get("user");
+        if (StringUtils.isBlank(name) || StringUtils.isBlank(password) || StringUtils.isBlank(user)) {
+            log.error("normalModify, param is null.name={}, password={}, user={}", name, password, user);
+            return new Result(true, StatusEnum.PARAM_ERROR, "data error", null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_NORMAL)) {
+            log.error("normalModify, access error");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        UserDTO userDTO = userService.modifyUserInfo(user, name, password);
+        if (userDTO == null) {
+            log.error("modify, modify user error.");
+            return new Result(true, StatusEnum.ERROR, null, null);
+        }
+        if (StringUtils.isBlank(userDTO.getUser()) || StringUtils.isBlank(userDTO.getName())
+                || StringUtils.isBlank(userDTO.getPassword())) {
+            log.error("modify, result error.userDTO={}", userDTO.toString());
+            return new Result(true, StatusEnum.ERROR, null, null);
+        }
+        return new Result(true, StatusEnum.OK, null, userDTO);
     }
 }

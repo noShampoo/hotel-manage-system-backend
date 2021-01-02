@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
             UserDO userDO = UserDO.builder()
                     .user(user)
                     .name(name)
-                    .password(CryptUtil.encrypt(password))
+                    .password(bCryptPasswordEncoder.encode(password))
                     .type(UniversalConstant.USER_TABLE_TYPE_NORMAL)
                     .status(UniversalConstant.USER_TABLE_STATUS_USING)
                     .build();
@@ -125,7 +125,6 @@ public class UserServiceImpl implements UserService {
             return UserDTO.builder()
                     .user(userDO.getUser())
                     .name(userDO.getName())
-                    .password(CryptUtil.decrypt(userDO.getPassword()))
                     .type(userDO.getType())
                     .build();
         } catch (Exception e) {

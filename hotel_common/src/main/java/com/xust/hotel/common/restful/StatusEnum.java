@@ -1,5 +1,6 @@
 package com.xust.hotel.common.restful;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -69,4 +70,9 @@ public enum StatusEnum {
      * 状态说明
      */
     private String desc;
+
+    @Override
+    public String toString() {
+        return JSONObject.toJSONString(this);
+    }
 }
