@@ -2,6 +2,9 @@ package com.xust.hotel.user.service;
 
 import com.xust.hotel.common.exception.InnerErrorException;
 import com.xust.hotel.user.pojo.UserDTO;
+import com.xust.hotel.user.pojo.UserVO;
+
+import java.util.List;
 
 /**
  * @author bhj
@@ -46,7 +49,33 @@ public interface UserService {
     public UserDTO createUser(String name, String password, String type) throws InnerErrorException;
 
 
+    /**
+     * modify
+     * @param user
+     * @param name
+     * @param password
+     * @return
+     * @throws InnerErrorException
+     */
     public UserDTO modifyUserInfo(String user, String name, String password) throws InnerErrorException;
 
+
+    /**
+     * delete
+     * @param user
+     * @return
+     * @throws InnerErrorException
+     */
     public boolean deleteUser(String user) throws InnerErrorException;
+
+
+    /**
+     * query list
+     * @param name
+     * @param page
+     * @param size
+     * @return
+     * @throws InnerErrorException
+     */
+    public List<UserVO> queryUser(String name, int page, int size) throws InnerErrorException;
 }

@@ -3,6 +3,7 @@ package com.xust.hotel.user.mapper;
 
 import com.xust.hotel.user.pojo.UserDO;
 import com.xust.hotel.user.pojo.UserDTO;
+import org.apache.catalina.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
@@ -66,16 +67,30 @@ public interface UserMapper {
     UserDO selectByUser(String user);
 
     /**
-     * page query
+     * find by name
      * @param userDTO
      * @return
      */
-    List<UserDO> findPageWithResult(UserDTO userDTO);
+    List<UserDO> findByName(UserDTO userDTO);
 
     /**
-     * page count
+     * find all
      * @param userDTO
      * @return
      */
-    Integer findPageWithCount(UserDTO userDTO);
+    List<UserDO> findAll(UserDTO userDTO);
+
+    /**
+     * count
+     * @param userDTO
+     * @return
+     */
+    Integer countFindByName(UserDTO userDTO);
+
+    /**
+     * count
+     * @param userDTO
+     * @return
+     */
+    Integer countAll(UserDTO userDTO);
 }

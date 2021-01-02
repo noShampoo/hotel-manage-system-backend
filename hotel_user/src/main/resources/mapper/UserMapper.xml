@@ -137,47 +137,31 @@
         where user = #{user,jdbcType=VARCHAR}
     </select>
 
-    <sql id="findPageWithWhere">
-        <where>
-            <if test="id != null" >
-                and id = #{id,jdbcType=INTEGER}
-            </if>
-            <if test="user != null and user != ''" >
-                and user = #{user,jdbcType=VARCHAR}
-            </if>
-            <if test="name != null and name != ''" >
-                and name = #{name,jdbcType=VARCHAR}
-            </if>
-            <if test="password != null and password != ''" >
-                and password = #{password,jdbcType=VARCHAR}
-            </if>
-            <if test="type != null and type != ''" >
-                and type = #{type,jdbcType=VARCHAR}
-            </if>
-            <if test="status != null and status != ''" >
-                and status = #{status,jdbcType=VARCHAR}
-            </if>
-            <if test="feature != null and feature != ''" >
-                and feature = #{feature,jdbcType=VARCHAR}
-            </if>
-        </where>
-    </sql>
-
-
-    <select id="findPageWithResult" parameterType="com.xust.hotel.user.pojo.UserDTO"
+    <select id="findByName" parameterType="com.xust.hotel.user.pojo.UserDTO"
             resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from  user
-        <include refid="findPageWithWhere" />
-        limit #{page},#{pageSize}
+        where name = #{name,jdbcType=VARCHAR} and type = #{type,jdbcType=VARCHAR} and status=#{status,jdbcType=VARCHAR}
     </select>
 
+    <select id="findAll" parameterType="com.xust.hotel.user.pojo.UserDTO"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from  user
+        where type = #{type,jdbcType=VARCHAR} and status=#{status,jdbcType=VARCHAR}
+    </select>
 
-    <select id="findPageWithCount" parameterType="com.xust.hotel.user.pojo.UserDTO" resultType="Integer">
+    <select id="countFindByName" parameterType="com.xust.hotel.user.pojo.UserDTO" resultType="Integer">
         select count(1)
         from user
-        <include refid="findPageWithWhere" />
+        where name = #{name,jdbcType=VARCHAR} and type = #{type,jdbcType=VARCHAR} and status=#{status,jdbcType=VARCHAR}
     </select>
 
+    <select id="countAll" parameterType="com.xust.hotel.user.pojo.UserDTO" resultType="Integer">
+        select count(1)
+        from user
+        where type = #{type,jdbcType=VARCHAR} and status=#{status,jdbcType=VARCHAR}
+    </select>
 </mapper>

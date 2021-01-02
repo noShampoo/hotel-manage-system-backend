@@ -1,7 +1,6 @@
 package com.xust.hotel.user.controller;
 
 import com.google.common.collect.Maps;
-import com.xust.hotel.common.dto.LoginUserPojo;
 import com.xust.hotel.common.exception.InnerErrorException;
 import com.xust.hotel.common.restful.RequestParam;
 import com.xust.hotel.common.restful.Result;
@@ -11,6 +10,7 @@ import com.xust.hotel.common.security.CryptUtil;
 import com.xust.hotel.common.security.JwtConstantConfig;
 import com.xust.hotel.common.security.JwtUtil;
 import com.xust.hotel.user.pojo.UserDTO;
+import com.xust.hotel.user.pojo.UserVO;
 import com.xust.hotel.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
@@ -20,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -235,5 +236,48 @@ public class UserController {
             return new Result(true, StatusEnum.ERROR, null, null);
         }
         return new Result(true, StatusEnum.OK, null, null);
+    }
+
+    /**
+     * query all
+     */
+    @GetMapping("/get/all/{page}/{size}")
+    public Result getAll(@PathVariable("page")int page,
+                         @PathVariable("size")int size,
+                         HttpServletRequest request) throws InnerErrorException {
+        if (page < 0 || size <= 0) {
+            log.error("getAll, param error.page={}, size={}", page, size);
+            return new Result(true, StatusEnum.PARAM_ERROR, "page:" + page + ",size:" + size, null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("delete, access error");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        List<UserVO> userVOList = userService.queryUser(null, page, size);
+        return new Result(true, StatusEnum.OK, null, userVOList);
+    }
+
+    /**
+     * query some user
+     */
+    @GetMapping("get/some/{name}/{page}/{size}")
+    public Result getSomeUser(@PathVariable("name")String name,
+                              @PathVariable("page")int page,
+                              @PathVariable("size")int size,
+                              HttpServletRequest request) throws InnerErrorException {
+        if (StringUtils.isBlank(name)) {
+            log.error("getSomeUser, name is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "name is null", null);
+        }
+        if (page < 0 || size <= 0) {
+            log.error("getAll, param error.page={}, size={}", page, size);
+            return new Result(true, StatusEnum.PARAM_ERROR, "page:" + page + ",size:" + size, null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("delete, access error");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        List<UserVO> userVOList = userService.queryUser(name, page, size);
+        return new Result(true, StatusEnum.OK, null, userVOList);
     }
 }

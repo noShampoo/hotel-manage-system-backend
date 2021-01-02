@@ -1,13 +1,14 @@
 package com.xust.hotel.user.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.xust.hotel.common.UniversalConstant;
 import com.xust.hotel.common.exception.InnerErrorException;
-import com.xust.hotel.common.exception.UserNotFoundException;
 import com.xust.hotel.common.security.CodingUtil;
 import com.xust.hotel.common.security.CryptUtil;
 import com.xust.hotel.user.mapper.UserMapper;
 import com.xust.hotel.user.pojo.UserDO;
 import com.xust.hotel.user.pojo.UserDTO;
+import com.xust.hotel.user.pojo.UserVO;
 import com.xust.hotel.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author bhj
@@ -189,6 +193,51 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             log.error("deleteUser occur exception.");
             throw new InnerErrorException("deleteUser occur exception.", e);
+        }
+    }
+
+    @Override
+    public List<UserVO> queryUser(String name, int page, int size) throws InnerErrorException {
+        try {
+            if (page < 0 || size <= 0) {
+                log.error("queryAllUser, param error.page={}, size={}", page, size);
+                return null;
+            }
+            UserDTO userDTO;
+            List<UserDO> result;
+            int count;
+            if (StringUtils.isBlank(name)) {
+                userDTO = UserDTO.builder()
+                        .status(UniversalConstant.USER_TABLE_STATUS_USING)
+                        .type(UniversalConstant.USER_TABLE_TYPE_NORMAL)
+                        .page(page)
+                        .pageSize(size)
+                        .build();
+                PageHelper.startPage(page, size);
+                result = userMapper.findAll(userDTO);
+                count = userMapper.countAll(userDTO);
+            } else {
+                userDTO = UserDTO.builder()
+                        .name(name)
+                        .status(UniversalConstant.USER_TABLE_STATUS_USING)
+                        .type(UniversalConstant.USER_TABLE_TYPE_NORMAL)
+                        .page(page)
+                        .pageSize(size)
+                        .build();
+                PageHelper.startPage(page, size);
+                result = userMapper.findByName(userDTO);
+                count = userMapper.countFindByName(userDTO);
+            }
+            return result.stream().map(temp -> UserVO.builder()
+                    .user(temp.getUser())
+                    .name(temp.getName())
+                    .type(temp.getType())
+                    .count(count)
+                    .build()).collect(Collectors.toList());
+
+        } catch (Exception e) {
+            log.error("queryAllUser occur exception.");
+            throw new InnerErrorException("queryAllUser occur exception.", e);
         }
     }
 }
