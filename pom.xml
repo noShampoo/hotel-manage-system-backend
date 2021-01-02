@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>hotel_common</module>
-        <module>hotel_user</module>
+        <module>hotel_app</module>
     </modules>
 
     <parent>

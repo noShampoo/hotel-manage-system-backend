@@ -12,10 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  */
 @MapperScan("com.xust.hotel.user.mapper")
 @SpringBootApplication
-public class UserApplication {
+public class HotelApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserApplication.class, args);
+        SpringApplication.run(HotelApplication.class, args);
     }
 
     @Bean
