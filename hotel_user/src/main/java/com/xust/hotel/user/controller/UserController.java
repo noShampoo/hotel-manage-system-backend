@@ -1,13 +1,16 @@
 package com.xust.hotel.user.controller;
 
 import com.google.common.collect.Maps;
+import com.xust.hotel.common.dto.LoginUserPojo;
 import com.xust.hotel.common.exception.InnerErrorException;
 import com.xust.hotel.common.restful.RequestParam;
 import com.xust.hotel.common.restful.Result;
 import com.xust.hotel.common.restful.StatusEnum;
+import com.xust.hotel.common.security.AccessUtil;
 import com.xust.hotel.common.security.CryptUtil;
 import com.xust.hotel.common.security.JwtConstantConfig;
 import com.xust.hotel.common.security.JwtUtil;
+import com.xust.hotel.user.pojo.UserDTO;
 import com.xust.hotel.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.MapUtils;
@@ -37,7 +40,6 @@ public class UserController {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-
     /**
      * register admin
      */
@@ -54,14 +56,14 @@ public class UserController {
             return new Result(true, StatusEnum.PARAM_ERROR, null, null);
         }
         if (requestParam == null || MapUtils.isEmpty(requestParam.getData())) {
-            log.error("login, param is null.");
+            log.error("register, param is null.");
             return new Result(true, StatusEnum.PARAM_ERROR, "param is null", null);
         }
         Map<String, String> data = requestParam.getData();
         String user = data.get("user");
         String password = data.get("password");
         if (StringUtils.isBlank(user) || StringUtils.isBlank(password)) {
-            log.error("login, param is null.user={}, password={}", user, password);
+            log.error("register, param is null.user={}, password={}", user, password);
             return new Result(true, StatusEnum.PARAM_ERROR, "data error", null);
         }
         if (userService.registerAdmin(user, password)) {
@@ -106,10 +108,13 @@ public class UserController {
         return new Result(true, StatusEnum.OK, null, map);
     }
 
+    /**
+     * log out
+     */
     @PostMapping("/login/out")
     public Result logout(@RequestBody RequestParam<Map<String, String>> requestParam) throws Exception {
         if (requestParam == null || MapUtils.isEmpty(requestParam.getData())) {
-            log.error("login, param is null.");
+            log.error("logout, param is null.");
             return new Result(true, StatusEnum.PARAM_ERROR, "param is null", null);
         }
         Map<String, String> data = requestParam.getData();
@@ -117,18 +122,56 @@ public class UserController {
         String password = data.get("password");
         String type = data.get("type");
         if (StringUtils.isBlank(user) || StringUtils.isBlank(password) || StringUtils.isBlank(type)) {
-            log.error("login, param is null.user={}, password={}, type={}", user, password, type);
+            log.error("logout, param is null.user={}, password={}, type={}", user, password, type);
             return new Result(true, StatusEnum.PARAM_ERROR, "data error", null);
         }
         if (!type.equals(JwtConstantConfig.USER_ROLE_NORMAL) && !type.equals(JwtConstantConfig.USER_ROLE_ADMIN)) {
-            log.error("login, type error.type={}", type);
+            log.error("logout, type error.type={}", type);
             return new Result(true, StatusEnum.PARAM_ERROR, "type error", null);
         }
         if (!userService.logout(user, password)) {
-            log.error("login, match fail.user={}, password={}", user, password);
+            log.error("logout, match fail.user={}, password={}", user, password);
             return new Result(true, StatusEnum.LOGIN_ERROR, null, null);
         }
         return new Result(true, StatusEnum.OK, null, null);
     }
 
+    /**
+     * admin user add normal user
+     */
+    @PostMapping("admin/add")
+    public Result add(@RequestBody RequestParam<Map<String, String>> requestParam,
+                      HttpServletRequest request) throws InnerErrorException {
+        if (requestParam == null || MapUtils.isEmpty(requestParam.getData())) {
+            log.error("add, param is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "param is null", null);
+        }
+        Map<String, String> data = requestParam.getData();
+        String name = data.get("name");
+        String password = data.get("password");
+        String type = data.get("type");
+        if (StringUtils.isBlank(name) || StringUtils.isBlank(password) || StringUtils.isBlank(type)) {
+            log.error("add, param is null.name={}, password={}, type={}", name, password, type);
+            return new Result(true, StatusEnum.PARAM_ERROR, "data error", null);
+        }
+        if (!type.equals(JwtConstantConfig.USER_ROLE_NORMAL)) {
+            log.error("add, type error.type={}", type);
+            return new Result(true, StatusEnum.PARAM_ERROR, "type error.type:" + type, null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("add, access error");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        UserDTO userDTO = userService.createUser(name, password, type);
+        if (userDTO == null) {
+            log.error("add, create user error.");
+            return new Result(true, StatusEnum.ERROR, null, null);
+        }
+        if (StringUtils.isBlank(userDTO.getUser()) || StringUtils.isBlank(userDTO.getName())
+                || StringUtils.isBlank(userDTO.getPassword()) || StringUtils.isBlank(userDTO.getType())) {
+            log.error("add, result error.userDTO={}", userDTO.toString());
+            return new Result(true, StatusEnum.ERROR, null, null);
+        }
+        return new Result(true, StatusEnum.OK, null, userDTO);
+    }
 }

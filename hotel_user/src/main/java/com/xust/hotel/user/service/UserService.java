@@ -1,6 +1,7 @@
 package com.xust.hotel.user.service;
 
 import com.xust.hotel.common.exception.InnerErrorException;
+import com.xust.hotel.user.pojo.UserDTO;
 
 /**
  * @author bhj
@@ -33,4 +34,14 @@ public interface UserService {
      * @return
      */
     public boolean logout(String user, String password) throws Exception;
+
+    /**
+     * create user
+     * @param name
+     * @param password
+     * @param type
+     * @return
+     * @throws InnerErrorException
+     */
+    public UserDTO createUser(String name, String password, String type) throws InnerErrorException;
 }

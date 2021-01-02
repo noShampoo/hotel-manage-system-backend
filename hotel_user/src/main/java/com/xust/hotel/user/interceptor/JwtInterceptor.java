@@ -27,7 +27,7 @@ public class JwtInterceptor implements HandlerInterceptor {
     private JwtUtil jwtUtil;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -48,6 +48,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                     log.error("preHandle, there are no user info, loginUserDTO is null");
                     return true;
                 }
+                log.info("preHandle, loginUserDTO={}", loginUserDTO.toString());
                 String redisAuth = String.valueOf(redisTemplate.opsForValue().get(loginUserDTO.getUser()));
                 if (StringUtils.isBlank(redisAuth)) {
                     //抛过期异常
