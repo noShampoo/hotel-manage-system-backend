@@ -128,4 +128,38 @@ public class UserServiceImpl implements UserService {
             throw new InnerErrorException("createUser occur exception.", e);
         }
     }
+
+    @Override
+    public UserDTO modifyUserInfo(String user, String name, String password) throws InnerErrorException {
+        try {
+            if (StringUtils.isBlank(user) || StringUtils.isBlank(name) || StringUtils.isBlank(password)) {
+                log.error("modifyUserInfo, param error.user={}, name={}, password={}", user, name, password);
+                return null;
+            }
+            UserDO queryUser = userMapper.selectByUser(user);
+            if (queryUser == null || queryUser.getId() == null) {
+                log.error("modifyUserInfo, query result is null.user={}", user);
+                return null;
+            }
+            UserDO userDO = UserDO.builder()
+                    .id(queryUser.getId())
+                    .name(name)
+                    .password(CryptUtil.encrypt(password))
+                    .build();
+            int i = userMapper.updateDynamic(userDO);
+            if (i != 1) {
+                log.error("modifyUserInfo, mapper update error.");
+                return null;
+            }
+            return UserDTO.builder()
+                    .user(user)
+                    .name(name)
+                    .password(CryptUtil.decrypt(userDO.getPassword()))
+                    .build();
+        } catch (Exception e) {
+            log.error("modifyUserInfo occur exception.");
+            throw new InnerErrorException("modifyUserI" +
+                    "nfo occur exception.");
+        }
+    }
 }

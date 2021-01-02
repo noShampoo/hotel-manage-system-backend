@@ -44,4 +44,7 @@ public interface UserService {
      * @throws InnerErrorException
      */
     public UserDTO createUser(String name, String password, String type) throws InnerErrorException;
+
+
+    public UserDTO modifyUserInfo(String user, String name, String password) throws InnerErrorException;
 }
