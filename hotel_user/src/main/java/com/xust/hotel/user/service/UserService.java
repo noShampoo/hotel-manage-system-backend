@@ -15,10 +15,11 @@ public interface UserService {
      * match
      * @param user
      * @param password
+     * @param type
      * @return
      * @throws InnerErrorException
      */
-    public boolean matchUserToPass(String user, String password) throws InnerErrorException;
+    public boolean matchUserToPass(String user, String password, String type) throws InnerErrorException;
 
     /**
      * register admin user

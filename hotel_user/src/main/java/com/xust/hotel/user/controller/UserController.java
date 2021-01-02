@@ -94,7 +94,7 @@ public class UserController {
             log.error("login, type error.type={}", type);
             return new Result(true, StatusEnum.PARAM_ERROR, "type error", null);
         }
-        if (!userService.matchUserToPass(user, password)) {
+        if (!userService.matchUserToPass(user, password, type)) {
             log.error("login, match fail.user={}, password={}", user, password);
             return new Result(true, StatusEnum.LOGIN_ERROR, null, null);
         }

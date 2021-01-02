@@ -1,4 +1,4 @@
-package com.xust.hotel.common;
+package com.xust.hotel.common.constantAndMapper;
 
 /**
  * @author bhj

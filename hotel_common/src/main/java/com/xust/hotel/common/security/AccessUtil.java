@@ -3,9 +3,6 @@ package com.xust.hotel.common.security;
 import com.xust.hotel.common.dto.LoginUserPojo;
 import com.xust.hotel.common.exception.InnerErrorException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -1,10 +1,10 @@
 package com.xust.hotel.user.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.xust.hotel.common.UniversalConstant;
+import com.xust.hotel.common.constantAndMapper.UniversalConstant;
+import com.xust.hotel.common.constantAndMapper.UniversalMapper;
 import com.xust.hotel.common.exception.InnerErrorException;
 import com.xust.hotel.common.security.CodingUtil;
-import com.xust.hotel.common.security.CryptUtil;
 import com.xust.hotel.user.mapper.UserMapper;
 import com.xust.hotel.user.pojo.UserDO;
 import com.xust.hotel.user.pojo.UserDTO;
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public boolean matchUserToPass(String user, String password) throws InnerErrorException {
+    public boolean matchUserToPass(String user, String password, String type) throws InnerErrorException {
         try {
             if (StringUtils.isBlank(user) || StringUtils.isBlank(password)) {
                 log.error("matchUserToPass, param error.user={}, password={}", user, password);
@@ -52,7 +52,8 @@ public class UserServiceImpl implements UserService {
                 log.error("matchUserToPass, query result password is null.");
                 return false;
             }
-            return bCryptPasswordEncoder.matches(password, userDO.getPassword());
+            return bCryptPasswordEncoder.matches(password, userDO.getPassword())
+                    && UniversalMapper.USER_TYPE_MAPPER.get(type).equals(userDO.getType());
         } catch (Exception e) {
             log.error("matchUserToPass occur exception.");
             throw new InnerErrorException("matchUserToPass occur exception.", e);
@@ -88,7 +89,8 @@ public class UserServiceImpl implements UserService {
                 log.error("logout, param error.user={}, password={}", user, password);
                 return false;
             }
-            if (!matchUserToPass(user, password)) {
+            if (!matchUserToPass(user, password, UniversalConstant.USER_TABLE_TYPE_ADMIN)
+                    && !matchUserToPass(user, password, UniversalConstant.USER_TABLE_TYPE_NORMAL)) {
                 log.error("logout, match fail.user={}, password={}", user, password);
                 return false;
             }
@@ -148,7 +150,7 @@ public class UserServiceImpl implements UserService {
             UserDO userDO = UserDO.builder()
                     .id(queryUser.getId())
                     .name(name)
-                    .password(CryptUtil.encrypt(password))
+                    .password(bCryptPasswordEncoder.encode(password))
                     .build();
             int i = userMapper.updateDynamic(userDO);
             if (i != 1) {
@@ -158,7 +160,7 @@ public class UserServiceImpl implements UserService {
             return UserDTO.builder()
                     .user(user)
                     .name(name)
-                    .password(CryptUtil.decrypt(userDO.getPassword()))
+                    .password(password)
                     .build();
         } catch (Exception e) {
             log.error("modifyUserInfo occur exception.");
