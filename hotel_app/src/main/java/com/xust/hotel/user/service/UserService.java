@@ -34,10 +34,11 @@ public interface UserService {
      * log out
      * @param user
      * @param password
+     * @param type
      * @throws Exception
      * @return
      */
-    public boolean logout(String user, String password) throws Exception;
+    public boolean logout(String user, String password, String type) throws Exception;
 
     /**
      * create user

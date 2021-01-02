@@ -3,7 +3,6 @@ package com.xust.hotel.user.mapper;
 
 import com.xust.hotel.user.pojo.UserDO;
 import com.xust.hotel.user.pojo.UserDTO;
-import org.apache.catalina.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 

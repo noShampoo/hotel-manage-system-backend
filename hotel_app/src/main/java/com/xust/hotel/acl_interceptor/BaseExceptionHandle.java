@@ -1,4 +1,4 @@
-package com.xust.hotel.user.interceptor;
+package com.xust.hotel.acl_interceptor;
 
 import com.xust.hotel.common.exception.ExpiredException;
 import com.xust.hotel.common.exception.InnerErrorException;
@@ -19,22 +19,22 @@ public class BaseExceptionHandle {
 
     @ResponseBody
     @ExceptionHandler(value = ExpiredException.class)
-    public Result expired(ExpiredException e) {
-        log.error("expired, ExpiredException msg={}, e={}", e.getMessage(), e);
-        return new Result(true, StatusEnum.EXPIRED_ERROR, e.getMessage(), null);
+    public Result expired() {
+        log.error("expired, ExpiredException");
+        return new Result(true, StatusEnum.EXPIRED_ERROR, null, null);
     }
 
     @ResponseBody
     @ExceptionHandler(value = InnerErrorException.class)
-    public Result inner(ExpiredException e) {
-        log.error("inner, server inner error.msg={}, e={}", e.getMessage(), e);
-        return new Result(false, StatusEnum.INNER_ERROR, e.getMessage(), null);
+    public Result inner() {
+        log.error("inner, server inner error.");
+        return new Result(false, StatusEnum.INNER_ERROR, null, null);
     }
 
     @ResponseBody
     @ExceptionHandler(value = UserNotFoundException.class)
-    public Result userNotFound(Exception e) {
-        log.error("userNotFound, user not found.msg={}, e={}", e.getMessage(), e);
-        return new Result(false, StatusEnum.USER_NOT_FOUND, e.getMessage(), null);
+    public Result userNotFound() {
+        log.error("userNotFound, user not found");
+        return new Result(false, StatusEnum.USER_NOT_FOUND,null, null);
     }
 }

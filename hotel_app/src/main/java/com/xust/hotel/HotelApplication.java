@@ -1,4 +1,4 @@
-package com.xust.hotel.user;
+package com.xust.hotel;
 
 import com.xust.hotel.common.security.JwtUtil;
 import org.mybatis.spring.annotation.MapperScan;

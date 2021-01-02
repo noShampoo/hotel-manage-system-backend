@@ -1,4 +1,4 @@
-package com.xust.hotel.user.interceptor;
+package com.xust.hotel.acl_interceptor;
 
 import com.xust.hotel.common.dto.LoginUserPojo;
 import com.xust.hotel.common.exception.ExpiredException;

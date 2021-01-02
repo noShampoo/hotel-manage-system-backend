@@ -1,6 +1,6 @@
-package com.xust.hotel.user.config;
+package com.xust.hotel.acl_config;
 
-import com.xust.hotel.user.interceptor.JwtInterceptor;
+import com.xust.hotel.acl_interceptor.JwtInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;

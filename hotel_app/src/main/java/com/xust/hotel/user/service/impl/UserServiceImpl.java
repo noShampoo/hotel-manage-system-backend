@@ -48,14 +48,16 @@ public class UserServiceImpl implements UserService {
                 log.error("matchUserToPass, query result is null.");
                 return false;
             }
+            log.info("userDO={}", userDO.toString());
             if (StringUtils.isBlank(userDO.getPassword())) {
                 log.error("matchUserToPass, query result password is null.");
                 return false;
             }
+            System.out.println("111111");
             return bCryptPasswordEncoder.matches(password, userDO.getPassword())
                     && UniversalMapper.USER_TYPE_MAPPER.get(type).equals(userDO.getType());
         } catch (Exception e) {
-            log.error("matchUserToPass occur exception.");
+            log.error("matchUserToPass occur exception.", e);
             throw new InnerErrorException("matchUserToPass occur exception.", e);
         }
     }
@@ -83,14 +85,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean logout(String user, String password) throws Exception {
+    public boolean logout(String user, String password, String type) throws Exception {
         try {
             if (StringUtils.isBlank(user) || StringUtils.isBlank(password)) {
                 log.error("logout, param error.user={}, password={}", user, password);
                 return false;
             }
-            if (!matchUserToPass(user, password, UniversalConstant.USER_TABLE_TYPE_ADMIN)
-                    && !matchUserToPass(user, password, UniversalConstant.USER_TABLE_TYPE_NORMAL)) {
+            if (!matchUserToPass(user, password, type)) {
                 log.error("logout, match fail.user={}, password={}", user, password);
                 return false;
             }

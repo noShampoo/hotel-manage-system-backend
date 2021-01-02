@@ -1,4 +1,4 @@
-package com.xust.hotel.user.config;
+package com.xust.hotel.acl_config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

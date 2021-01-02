@@ -130,7 +130,7 @@ public class UserController {
             log.error("logout, type error.type={}", type);
             return new Result(true, StatusEnum.PARAM_ERROR, "type error", null);
         }
-        if (!userService.logout(user, password)) {
+        if (!userService.logout(user, password, type)) {
             log.error("logout, match fail.user={}, password={}", user, password);
             return new Result(true, StatusEnum.LOGIN_ERROR, null, null);
         }
