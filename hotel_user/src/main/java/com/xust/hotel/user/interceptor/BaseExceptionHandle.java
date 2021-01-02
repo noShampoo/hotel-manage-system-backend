@@ -2,6 +2,7 @@ package com.xust.hotel.user.interceptor;
 
 import com.xust.hotel.common.exception.ExpiredException;
 import com.xust.hotel.common.exception.InnerErrorException;
+import com.xust.hotel.common.exception.UserNotFoundException;
 import com.xust.hotel.common.restful.Result;
 import com.xust.hotel.common.restful.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -28,5 +29,12 @@ public class BaseExceptionHandle {
     public Result inner(ExpiredException e) {
         log.error("inner, server inner error.msg={}, e={}", e.getMessage(), e);
         return new Result(false, StatusEnum.INNER_ERROR, e.getMessage(), null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = UserNotFoundException.class)
+    public Result userNotFound(Exception e) {
+        log.error("userNotFound, user not found.msg={}, e={}", e.getMessage(), e);
+        return new Result(false, StatusEnum.USER_NOT_FOUND, e.getMessage(), null);
     }
 }

@@ -2,6 +2,7 @@ package com.xust.hotel.user.service.impl;
 
 import com.xust.hotel.common.UniversalConstant;
 import com.xust.hotel.common.exception.InnerErrorException;
+import com.xust.hotel.common.exception.UserNotFoundException;
 import com.xust.hotel.common.security.CodingUtil;
 import com.xust.hotel.common.security.CryptUtil;
 import com.xust.hotel.user.mapper.UserMapper;
@@ -160,6 +161,34 @@ public class UserServiceImpl implements UserService {
             log.error("modifyUserInfo occur exception.");
             throw new InnerErrorException("modifyUserI" +
                     "nfo occur exception.");
+        }
+    }
+
+    @Override
+    public boolean deleteUser(String user) throws InnerErrorException {
+        try {
+            if (StringUtils.isBlank(user)) {
+                log.error("deleteUser, user is null.");
+                return false;
+            }
+            UserDO queryUser = userMapper.selectByUser(user);
+            if (queryUser == null || queryUser.getId() == null) {
+                log.error("deleteUser, query result is null.user={}", user);
+                return false;
+            }
+            UserDO userDO = UserDO.builder()
+                    .id(queryUser.getId())
+                    .status(UniversalConstant.USER_TABLE_STATUS_NO_USING)
+                    .build();
+            int i = userMapper.updateDynamic(userDO);
+            if (i != 1) {
+                log.error("deleteUser, mapper delete error.");
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            log.error("deleteUser occur exception.");
+            throw new InnerErrorException("deleteUser occur exception.", e);
         }
     }
 }

@@ -50,6 +50,11 @@ public enum StatusEnum {
     EXPIRED_ERROR(20007, "权限过期"),
 
     /**
+     * 用户不存在
+     */
+    USER_NOT_FOUND(2008, "用户不存在"),
+
+    /**
      * inner error
      */
     INNER_ERROR(50000, "内部异常")

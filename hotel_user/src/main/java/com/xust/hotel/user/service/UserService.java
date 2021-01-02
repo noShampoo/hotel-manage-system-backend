@@ -47,4 +47,6 @@ public interface UserService {
 
 
     public UserDTO modifyUserInfo(String user, String name, String password) throws InnerErrorException;
+
+    public boolean deleteUser(String user) throws InnerErrorException;
 }

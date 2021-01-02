@@ -209,4 +209,31 @@ public class UserController {
         }
         return new Result(true, StatusEnum.OK, null, userDTO);
     }
+
+    /**
+     * delete
+     */
+    @PostMapping("/admin/delete")
+    public Result delete(@RequestBody RequestParam<Map<String, String>> requestParam,
+                         HttpServletRequest request) throws InnerErrorException {
+        if (requestParam == null || MapUtils.isEmpty(requestParam.getData())) {
+            log.error("delete, param is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "param is null", null);
+        }
+        Map<String, String> data = requestParam.getData();
+        String user = data.get("user");
+        if (StringUtils.isBlank(user)) {
+            log.error("delete, param is null.user={}", user);
+            return new Result(true, StatusEnum.PARAM_ERROR, "data error", null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("delete, access error");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        if (!userService.deleteUser(user)) {
+            log.error("delete, delete fail.");
+            return new Result(true, StatusEnum.ERROR, null, null);
+        }
+        return new Result(true, StatusEnum.OK, null, null);
+    }
 }
