@@ -28,4 +28,14 @@ public class RoomDetailVO extends BasePojo {
      * room price
      */
     private Double roomPrice;
+
+    /**
+     * price unit
+     */
+    private String priceUnit;
+
+    /**
+     * count
+     */
+    private int count;
 }

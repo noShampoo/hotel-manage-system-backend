@@ -23,7 +23,7 @@ public interface RoomInfoMapper {
      * @param roomInfoDO
      * @return
      */
-    int saveDynamic(RoomInfoDO roomInfoDO);
+    boolean saveDynamic(RoomInfoDO roomInfoDO);
 
     /**
      * query by key
@@ -50,12 +50,19 @@ public interface RoomInfoMapper {
      * @param roomType
      * @return
      */
-    int deleteByRoomType(String roomType);
+    boolean deleteByRoomType(String roomType);
 
     /**
-     * update by room key
+     * delete room
      * @param roomTypeKey
      * @return
      */
-    int updateByRoomTypeKey(String roomTypeKey);
+    boolean deleteByRoomTypeKey(String roomTypeKey);
+
+    /**
+     * update by room key
+     * @param roomInfoDO
+     * @return
+     */
+    boolean updateByRoomTypeKey(RoomInfoDO roomInfoDO);
 }

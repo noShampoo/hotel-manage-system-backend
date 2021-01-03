@@ -16,4 +16,14 @@ public class UniversalConstant {
     public static final String ADMIN_USER_NAME = "xust-7202-admin";
 
     public static final String DEFAULT_ROOM_PRICE_UNIT = "CNY";
+
+    public static final String GUEST_ROOM_TABLE_R_STATUS_NO_PERSON = "rs0";
+
+    public static final String GUEST_ROOM_TABLE_R_STATUS_PERSON = "rs1";
+
+    public static final String GUEST_ROOM_TABLE_R_STATUS_REVERSE = "rs2";
+
+    public static final String GUEST_ROOM_TABLE_PHY_STATUS_NOT_USING = "ps0";
+
+    public static final String GUEST_ROOM_TABLE_PHY_STATUS_USING = "ps1";
 }

@@ -1,8 +1,6 @@
 package com.xust.hotel.acl_interceptor;
 
-import com.xust.hotel.common.exception.ExpiredException;
-import com.xust.hotel.common.exception.InnerErrorException;
-import com.xust.hotel.common.exception.UserNotFoundException;
+import com.xust.hotel.common.exception.*;
 import com.xust.hotel.common.restful.Result;
 import com.xust.hotel.common.restful.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -36,5 +34,26 @@ public class BaseExceptionHandle {
     public Result userNotFound() {
         log.error("userNotFound, user not found");
         return new Result(false, StatusEnum.USER_NOT_FOUND,null, null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = NotDeleteException.class)
+    public Result notDelete() {
+        log.error("notDelete, can't delete");
+        return new Result(false, StatusEnum.CAN_NOT_DELETE, null, null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = NoSuchKeyException.class)
+    public Result noSuchKey() {
+        log.error("noSuchKey, no such key");
+        return new Result(false, StatusEnum.NO_SUCH_KEY, null, null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = KeyExistException.class)
+    public Result keyExist() {
+        log.error("keyExist.");
+        return new Result(false, StatusEnum.KEY_EXIST, null, null);
     }
 }

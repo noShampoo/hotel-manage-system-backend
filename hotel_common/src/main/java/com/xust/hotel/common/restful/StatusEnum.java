@@ -2,7 +2,6 @@ package com.xust.hotel.common.restful;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 
 import java.io.Serializable;
 
@@ -56,6 +55,18 @@ public enum StatusEnum implements Serializable {
      * 用户不存在
      */
     USER_NOT_FOUND(2008, "用户不存在"),
+
+    /**
+     * can't delete
+     */
+    CAN_NOT_DELETE(30001, "无法删除"),
+
+    /**
+     * no such key
+     */
+    NO_SUCH_KEY(30002, "不存在此key"),
+
+    KEY_EXIST(30003, "key已存在"),
 
     /**
      * inner error
