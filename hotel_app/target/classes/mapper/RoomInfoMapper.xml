@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xust.hotel.hosing.mapper.RoomInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.xust.hotel.acl_pojo.dbo.RoomInfoDO">
+        <result column="room_type_key" jdbcType="VARCHAR" property="roomTypeKey" />
+        <result column="room_type" jdbcType="VARCHAR" property="roomType" />
+        <result column="room_price" jdbcType="VARCHAR" property="roomPrice" />
+        <result column="price_unit" jdbcType="DOUBLE" property="priceUnit" />
+        <result column="feature" jdbcType="VARCHAR" property="feature" />
+    </resultMap>
+
+
+    <insert id="saveDynamic" parameterType="com.xust.hotel.acl_pojo.dbo.RoomInfoDO">
+        insert into room_info(room_type_key, room_type, room_price)
+        values (#{roomTypeKey,jdbcType=DOUBLE}, #{roomType,jdbcType=VARCHAR}, #{roomPrice,jdbcType=DOUBLE});
+    </insert>
+
+    <select id="queryByRoomTypeKey" parameterType="java.lang.String"
+            resultMap="BaseResultMap">
+        select * from room_info
+        where room_type_key = #{roomTypeKey,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryByRoomType" parameterType="java.lang.String"
+            resultMap="BaseResultMap">
+        select * from room_info
+        where room_type = #{roomType,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryAll" parameterType="java.lang.String"
+            resultMap="BaseResultMap">
+        select * from room_info
+    </select>
+
+    <delete id="deleteByRoomType" parameterType="java.lang.String">
+        delete from room_info
+        where room_type = #{roomType,jdbcType=VARCHAR}
+    </delete>
+
+    <delete id="deleteByRoomTypeKey" parameterType="java.lang.String">
+        delete from room_info
+        where room_type_key = #{roomTypeKey,jdbcType=VARCHAR}
+    </delete>
+
+    <update id="updateByRoomTypeKey" parameterType="com.xust.hotel.acl_pojo.dbo.RoomInfoDO">
+        update room_info
+        set room_type=#{roomType,jdbcType=VARCHAR}, room_price=#{roomPrice,jdbcType=DOUBLE}
+        where room_type_key = #{roomTypeKey,jdbcType=VARCHAR}
+    </update>
+</mapper>
