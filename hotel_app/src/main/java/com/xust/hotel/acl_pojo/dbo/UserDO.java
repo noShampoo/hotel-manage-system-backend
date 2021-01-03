@@ -1,4 +1,4 @@
-package com.xust.hotel.user.pojo;
+package com.xust.hotel.acl_pojo.dbo;
 
 
 import com.alibaba.fastjson.JSONObject;

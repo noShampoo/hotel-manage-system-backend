@@ -1,8 +1,8 @@
 package com.xust.hotel.user.service;
 
 import com.xust.hotel.common.exception.InnerErrorException;
-import com.xust.hotel.user.pojo.UserDTO;
-import com.xust.hotel.user.pojo.UserVO;
+import com.xust.hotel.acl_pojo.dto.UserDTO;
+import com.xust.hotel.acl_pojo.vo.UserVO;
 
 import java.util.List;
 

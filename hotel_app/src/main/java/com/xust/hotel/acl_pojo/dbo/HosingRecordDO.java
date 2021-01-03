@@ -1,9 +1,6 @@
-package com.xust.hotel.hosing.pojo;
+package com.xust.hotel.acl_pojo.dbo;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 
 import com.xust.hotel.common.dto.BasePojo;
 import lombok.*;
@@ -24,7 +21,6 @@ import lombok.*;
 public class HosingRecordDO extends BasePojo {
     private static final long serialVersionUID = 8100746077721188816L;
 
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**

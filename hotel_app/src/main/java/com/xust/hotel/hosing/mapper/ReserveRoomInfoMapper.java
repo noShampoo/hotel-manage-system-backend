@@ -1,7 +1,6 @@
 package com.xust.hotel.hosing.mapper;
 
-import com.xust.hotel.hosing.pojo.ReserveRoomInfoDO;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -11,6 +10,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author bhj
  * @since 2021-01-03
  */
-public interface ReserveRoomInfoMapper extends BaseMapper<ReserveRoomInfoDO> {
+@Mapper
+public interface ReserveRoomInfoMapper {
 
 }

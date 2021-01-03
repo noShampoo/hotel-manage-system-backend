@@ -1,4 +1,4 @@
-package com.xust.hotel.user.pojo;
+package com.xust.hotel.acl_pojo.dto;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xust.hotel.common.dto.BasePojo;
@@ -12,28 +12,44 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class UserVO extends BasePojo {
-    private static final long serialVersionUID = 686897910642818110L;
+public class UserDTO extends BasePojo {
+
+    private static final long serialVersionUID = 1663044010643691958L;
 
     /**
-     * user
+     * 用户名
      */
     private String user;
 
     /**
-     * name
+     * 使用者姓名
      */
     private String name;
 
     /**
-     * type
+     * 账号密码
+     */
+    private String password;
+
+    /**
+     * t0->normal,t1->admin
      */
     private String type;
 
     /**
-     * count
+     * s0->not using,s1->using
      */
-    private Integer count;
+    private String status;
+
+    /**
+     * page
+     */
+    private Integer page;
+
+    /**
+     * size
+     */
+    private Integer pageSize;
 
     @Override
     public String toString() {

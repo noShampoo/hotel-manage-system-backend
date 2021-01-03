@@ -1,9 +1,6 @@
 package com.xust.hotel.hosing.service.impl;
 
-import com.xust.hotel.hosing.pojo.GuestRoomDO;
-import com.xust.hotel.hosing.mapper.GuestRoomMapper;
 import com.xust.hotel.hosing.service.GuestRoomService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +12,6 @@ import org.springframework.stereotype.Service;
  * @since 2021-01-03
  */
 @Service
-public class GuestRoomServiceImpl extends ServiceImpl<GuestRoomMapper, GuestRoomDO> implements GuestRoomService {
+public class GuestRoomServiceImpl implements GuestRoomService {
 
 }

@@ -1,7 +1,8 @@
 package com.xust.hotel.hosing.service;
 
-import com.xust.hotel.hosing.pojo.RoomInfoDO;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.xust.hotel.acl_pojo.dbo.RoomInfoDO;
+import com.xust.hotel.acl_pojo.vo.RoomDetailVO;
+import com.xust.hotel.common.exception.InnerErrorException;
 
 /**
  * <p>
@@ -11,6 +12,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author bhj
  * @since 2021-01-03
  */
-public interface RoomInfoService extends IService<RoomInfoDO> {
+public interface RoomInfoService {
 
+    /**
+     * save
+     * @param data
+     * @return
+     */
+    boolean saveDynamic(RoomDetailVO data) throws InnerErrorException;
 }

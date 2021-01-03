@@ -14,4 +14,6 @@ public class UniversalConstant {
     public static final String USER_TABLE_STATUS_USING = "s1";
 
     public static final String ADMIN_USER_NAME = "xust-7202-admin";
+
+    public static final String DEFAULT_ROOM_PRICE_UNIT = "CNY";
 }

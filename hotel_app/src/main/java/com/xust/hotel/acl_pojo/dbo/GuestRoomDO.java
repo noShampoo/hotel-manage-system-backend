@@ -1,9 +1,6 @@
-package com.xust.hotel.hosing.pojo;
+package com.xust.hotel.acl_pojo.dbo;
 
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 
 import com.xust.hotel.common.dto.BasePojo;
 import lombok.*;
@@ -27,7 +24,6 @@ public class GuestRoomDO extends BasePojo {
     /**
      * 房间号
      */
-    @TableId(value = "room_no", type = IdType.ASSIGN_ID)
     private String roomNo;
 
     /**

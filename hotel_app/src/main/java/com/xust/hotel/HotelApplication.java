@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  * @author bhj
  */
 @MapperScan("com.xust.hotel.user.mapper")
+@MapperScan("com.xust.hotel.hosing.mapper")
 @SpringBootApplication
 public class HotelApplication {
 
