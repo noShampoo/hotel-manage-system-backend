@@ -4,11 +4,13 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @author bhj
  */
 @AllArgsConstructor
-public enum StatusEnum {
+public enum StatusEnum implements Serializable {
 
     /**
      * 成功
