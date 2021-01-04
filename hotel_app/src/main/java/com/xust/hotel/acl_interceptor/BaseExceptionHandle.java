@@ -37,7 +37,7 @@ public class BaseExceptionHandle {
     }
 
     @ResponseBody
-    @ExceptionHandler(value = NotDeleteException.class)
+    @ExceptionHandler(value = NotChangeException.class)
     public Result notDelete() {
         log.error("notDelete, can't delete");
         return new Result(false, StatusEnum.CAN_NOT_DELETE, null, null);
@@ -55,5 +55,12 @@ public class BaseExceptionHandle {
     public Result keyExist() {
         log.error("keyExist.");
         return new Result(false, StatusEnum.KEY_EXIST, null, null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = StatusErrorException.class)
+    public Result statusError() {
+        log.error("statusError");
+        return new Result(false, StatusEnum.STATUS_ERROR, null, null);
     }
 }

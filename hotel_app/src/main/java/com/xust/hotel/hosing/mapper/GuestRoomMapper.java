@@ -18,6 +18,12 @@ import java.util.List;
 @Repository
 public interface GuestRoomMapper {
 
+    /**
+     * add
+     * @param guestRoomDO
+     * @return
+     */
+    boolean insertDynamic(GuestRoomDO guestRoomDO);
 
     /**
      * query
@@ -33,4 +39,40 @@ public interface GuestRoomMapper {
      * @return
      */
     int updatePhyStatusByRoomDetail(String roomTypeKey, String phyStatus);
+
+    /**
+     * update
+     * @param roomNo
+     * @param roomDetail
+     * @return
+     */
+    boolean updateRoomDetailByRoomNo(String roomNo, String roomDetail);
+
+    /**
+     * update
+     * @param roomNo
+     * @param phyStatus
+     * @return
+     */
+    boolean updatePhyStatusByRoomNo(String roomNo, String phyStatus);
+
+    /**
+     * query
+     * @param roomDetail
+     * @return
+     */
+    List<GuestRoomDO> queryByRoomDetail(String roomDetail);
+
+    /**
+     * query
+     * @param roomNo
+     * @return
+     */
+    GuestRoomDO queryByRoomNo(String roomNo);
+
+    /**
+     * query all
+     * @return
+     */
+    List<GuestRoomDO> queryAll();
 }

@@ -1,6 +1,9 @@
 package com.xust.hotel.hosing.service.impl;
 
+import com.xust.hotel.hosing.mapper.HosingRecordMapper;
 import com.xust.hotel.hosing.service.HosingRecordService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,7 +14,16 @@ import org.springframework.stereotype.Service;
  * @author bhj
  * @since 2021-01-03
  */
+@Slf4j
 @Service
 public class HosingRecordServiceImpl implements HosingRecordService {
 
+    @Autowired
+    private HosingRecordMapper hosingRecordMapper;
+
+
+    @Override
+    public void test() {
+        log.info("data={}", hosingRecordMapper.queryAll().toArray());
+    }
 }

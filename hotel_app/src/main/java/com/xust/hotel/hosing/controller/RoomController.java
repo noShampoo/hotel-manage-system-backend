@@ -1,15 +1,14 @@
 package com.xust.hotel.hosing.controller;
 
-import com.xust.hotel.common.exception.InnerErrorException;
-import com.xust.hotel.common.exception.KeyExistException;
-import com.xust.hotel.common.exception.NoSuchKeyException;
-import com.xust.hotel.common.exception.NotDeleteException;
+import com.xust.hotel.acl_pojo.vo.GuestRoomVO;
+import com.xust.hotel.common.exception.*;
 import com.xust.hotel.common.restful.RequestParam;
 import com.xust.hotel.common.restful.Result;
 import com.xust.hotel.common.restful.StatusEnum;
 import com.xust.hotel.common.security.AccessUtil;
 import com.xust.hotel.common.security.JwtConstantConfig;
 import com.xust.hotel.acl_pojo.vo.RoomDetailVO;
+import com.xust.hotel.hosing.service.GuestRoomService;
 import com.xust.hotel.hosing.service.RoomInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +31,9 @@ public class RoomController {
 
     @Autowired
     private RoomInfoService roomInfoService;
+
+    @Autowired
+    private GuestRoomService guestRoomService;
 
     /**
      * add room type
@@ -66,7 +68,7 @@ public class RoomController {
      */
     @PostMapping("detail/modify")
     public Result modify(@RequestBody RequestParam<RoomDetailVO> requestParam,
-                         HttpServletRequest request) throws InnerErrorException, NoSuchKeyException, KeyExistException {
+                         HttpServletRequest request) throws InnerErrorException, NoSuchKeyException, KeyExistException, NotChangeException {
         if (requestParam == null || requestParam.getData() == null) {
             log.error("modify, param is null.");
             return new Result(true, StatusEnum.OK, "param is null", null);
@@ -96,7 +98,7 @@ public class RoomController {
      */
     @PostMapping("/detail/delete")
     public Result delete(@RequestBody RequestParam<Map<String, String>> requestParam,
-                         HttpServletRequest request) throws InnerErrorException, NotDeleteException, NoSuchKeyException {
+                         HttpServletRequest request) throws InnerErrorException, NotChangeException, NoSuchKeyException {
         if (requestParam == null || requestParam.getData() == null) {
             log.error("modify, param is null.");
             return new Result(true, StatusEnum.OK, "param is null", null);
@@ -154,5 +156,65 @@ public class RoomController {
         RoomDetailVO roomDetailVO = roomInfoService.queryByRoomKeyOrRoomType(roomKey, null);
         return new Result(true, StatusEnum.OK, null, roomDetailVO);
     }
+
+    /**
+     * guest room add
+     */
+    @PostMapping("/add")
+    public Result addGuest(@RequestBody RequestParam<GuestRoomVO> requestParam,
+                           HttpServletRequest request) throws InnerErrorException, StatusErrorException, KeyExistException, NoSuchKeyException {
+        if (requestParam == null || requestParam.getData() == null) {
+            log.error("addGuest, param is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "param error", null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("all, access error.");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        GuestRoomVO data = requestParam.getData();
+        String roomNo = data.getRoomNo();
+        String roomStatus = data.getRoomStatus();
+        String roomDetail = data.getRoomDetail();
+        if (StringUtils.isBlank(roomNo) || StringUtils.isBlank(roomDetail) || StringUtils.isBlank(roomStatus)) {
+            log.error("addGuest, param's data error.data={}", data);
+            return new Result(true, StatusEnum.PARAM_ERROR, "data:" + data.toString(), null);
+        }
+        if (guestRoomService.add(roomNo, roomDetail, roomStatus)) {
+            return new Result(true, StatusEnum.OK, null, null);
+        }
+        log.error("addGuest, service add error.data={}", data.toString());
+        return new Result(true, StatusEnum.ERROR, null, null);
+    }
+
+
+    /**
+     * guest room modify
+     */
+    @PostMapping("/modify")
+    public Result modifyGuest(@RequestBody RequestParam<GuestRoomVO> requestParam,
+                           HttpServletRequest request) throws InnerErrorException, StatusErrorException, KeyExistException, NoSuchKeyException, NotChangeException {
+        if (requestParam == null || requestParam.getData() == null) {
+            log.error("addGuest, param is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "param error", null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("all, access error.");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        GuestRoomVO data = requestParam.getData();
+        String roomNo = data.getRoomNo();
+        String roomDetail = data.getRoomDetail();
+        if (StringUtils.isBlank(roomNo) || StringUtils.isBlank(roomDetail)) {
+            log.error("addGuest, param's data error.data={}", data);
+            return new Result(true, StatusEnum.PARAM_ERROR, "data:" + data.toString(), null);
+        }
+        if (guestRoomService.modify(roomNo, roomDetail)) {
+            return new Result(true, StatusEnum.OK, null, null);
+        }
+        log.error("addGuest, service add error.data={}", data.toString());
+        return new Result(true, StatusEnum.ERROR, null, null);
+    }
+
+
 
 }

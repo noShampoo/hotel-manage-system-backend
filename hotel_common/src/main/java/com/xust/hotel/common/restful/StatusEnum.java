@@ -66,7 +66,15 @@ public enum StatusEnum implements Serializable {
      */
     NO_SUCH_KEY(30002, "不存在此key"),
 
+    /**
+     * key exist
+     */
     KEY_EXIST(30003, "key已存在"),
+
+    /**
+     * status error
+     */
+    STATUS_ERROR(30004, "status error"),
 
     /**
      * inner error

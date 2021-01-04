@@ -12,33 +12,33 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class RoomDetailVO extends BasePojo {
-    private static final long serialVersionUID = -2594212882058637436L;
+public class GuestRoomVO extends BasePojo {
+    private static final long serialVersionUID = 2613157886893035086L;
 
     /**
-     * room type key
+     * room no
      */
-    private String roomKey;
+    private String roomNo;
 
     /**
-     * room type
+     * room status
      */
-    private String roomType;
+    private String roomStatus;
 
     /**
-     * room price
+     * room detail
      */
-    private Double roomPrice;
+    private String roomDetail;
 
     /**
-     * price unit
+     * order no
      */
-    private String priceUnit;
+    private String orderNo;
 
     /**
      * count
      */
-    private int count;
+    private Integer count;
 
     @Override
     public String toString() {

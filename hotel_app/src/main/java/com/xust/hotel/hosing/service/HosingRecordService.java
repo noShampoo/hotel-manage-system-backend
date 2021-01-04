@@ -10,4 +10,6 @@ package com.xust.hotel.hosing.service;
  */
 public interface HosingRecordService {
 
+    void test();
+
 }

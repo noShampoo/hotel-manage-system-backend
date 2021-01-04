@@ -58,7 +58,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     }
 
     @Override
-    public RoomDetailVO modifyDynamic(RoomDetailVO data) throws InnerErrorException, NoSuchKeyException, KeyExistException {
+    public RoomDetailVO modifyDynamic(RoomDetailVO data) throws InnerErrorException, NoSuchKeyException, KeyExistException, NotChangeException {
         try {
             log.info("modifyDynamic, data={}", data.toString());
             if (!checkVO(data)) {
@@ -71,6 +71,11 @@ public class RoomInfoServiceImpl implements RoomInfoService {
             } else if (roomInfoMapper.queryByRoomType(data.getRoomType()) != null) {
                 log.error("modifyDynamic, this type exist.");
                 throw new KeyExistException("this type exist");
+            }
+            int i = guestRoomMapper.countNotNoPersonByRoomTypeKey(data.getRoomKey());
+            if (i != 0) {
+                log.error("modifyDynamic, there are still people living in this type of room.");
+                throw new NotChangeException("no person");
             }
             if (!roomInfoMapper.updateByRoomTypeKey(convertVO2DO(data))) {
                 log.error("modifyDynamic, update error.data={}", data.toString());
@@ -85,11 +90,14 @@ public class RoomInfoServiceImpl implements RoomInfoService {
                     .build();
             log.error("build={}", build);
             return build;
+        } catch (NotChangeException e) {
+            log.error("modifyDynamic, there are still people living in this type of room.");
+            throw new NotChangeException("no person");
         } catch (KeyExistException e) {
-            log.error("modify, ype exist.", e);
+            log.error("modifyDynamic, ype exist.", e);
             throw new KeyExistException("type exist");
         } catch (NoSuchKeyException e) {
-            log.error("modify, no such key.", e);
+            log.error("modifyDynamic, no such key.", e);
             throw new NoSuchKeyException("no such key");
         } catch (Exception e) {
             log.error("modifyDynamic occur exception.", e);
@@ -98,27 +106,27 @@ public class RoomInfoServiceImpl implements RoomInfoService {
     }
 
     @Override
-    public boolean delete(String roomKey) throws NotDeleteException, NoSuchKeyException, InnerErrorException {
+    public boolean delete(String roomKey) throws NotChangeException, NoSuchKeyException, InnerErrorException {
         try {
             log.info("delete, roomKey={}", roomKey);
             if (StringUtils.isBlank(roomKey)) {
                 log.error("delete, roomKey is null.");
                 return false;
             }
-            if (guestRoomMapper.countNotNoPersonByRoomTypeKey(roomKey) != 0) {
+            int i = guestRoomMapper.countNotNoPersonByRoomTypeKey(roomKey);
+            if (i != 0) {
                 log.error("delete, there are still people living in this type of room.");
-                throw new NotDeleteException("no person");
+                throw new NotChangeException("no person");
             }
             if (!roomInfoMapper.deleteByRoomTypeKey(roomKey)) {
                 log.error("delete, this room key isn't exist");
                 throw new NoSuchKeyException("this room key isn't exist");
             }
-            guestRoomMapper.updatePhyStatusByRoomDetail(roomKey,
+            return i == guestRoomMapper.updatePhyStatusByRoomDetail(roomKey,
                     UniversalConstant.GUEST_ROOM_TABLE_PHY_STATUS_NOT_USING);
-            return true;
-        } catch (NotDeleteException e) {
+        } catch (NotChangeException e) {
             log.error("delete, not delete", e);
-            throw new NotDeleteException("no person");
+            throw new NotChangeException("no person");
         } catch (NoSuchKeyException e) {
             log.error("delete, no such key", e);
             throw new NoSuchKeyException("no such key");
@@ -136,6 +144,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
                 log.error("query, param error.page={}, size={}", page, size);
                 return null;
             }
+            int count = roomInfoMapper.queryAll().size();
             PageHelper.startPage(page, size);
             List<RoomInfoDO> roomInfoDOS = roomInfoMapper.queryAll();
             if (roomInfoDOS.size() == 0) {
@@ -146,7 +155,7 @@ public class RoomInfoServiceImpl implements RoomInfoService {
                     .roomPrice(temp.getRoomPrice())
                     .roomKey(temp.getRoomTypeKey())
                     .priceUnit(temp.getPriceUnit())
-                    .count(roomInfoDOS.size())
+                    .count(count)
                     .build()
             ).collect(Collectors.toList());
         } catch (Exception e) {

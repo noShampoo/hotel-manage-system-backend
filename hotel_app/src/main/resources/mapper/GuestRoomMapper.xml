@@ -2,10 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xust.hotel.hosing.mapper.GuestRoomMapper">
 
+    <resultMap id="BaseResultMap" type="com.xust.hotel.acl_pojo.dbo.GuestRoomDO">
+        <result column="room_no" jdbcType="VARCHAR" property="roomNo" />
+        <result column="room_status" jdbcType="VARCHAR" property="roomStatus" />
+        <result column="room_detail" jdbcType="VARCHAR" property="roomDetail" />
+        <result column="order_no" jdbcType="DOUBLE" property="orderNo" />
+        <result column="phy_status" jdbcType="VARCHAR" property="phyStatus" />
+    </resultMap>
+
+    <insert id="insertDynamic" parameterType="com.xust.hotel.acl_pojo.dbo.GuestRoomDO">
+        insert into guest_room(room_no, room_status, room_detail)
+        values (#{roomNo,jdbcType=VARCHAR}, #{roomStatus,jdbcType=VARCHAR}, #{roomDetail,jdbcType=VARCHAR});
+    </insert>
 
     <select id="countNotNoPersonByRoomTypeKey" parameterType="java.lang.String" resultType="java.lang.Integer">
         select count(1) from guest_room
         where room_detail = #{roomTypeKey,jdbcType=VARCHAR} and room_status!='rs0' and phy_status='ps1'
+    </select>
+
+    <select id="queryByRoomDetail" parameterType="java.lang.String"
+            resultMap="BaseResultMap">
+        select * from guest_room
+        where room_detail = #{roomDetail,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryByRoomNo" parameterType="java.lang.String"
+            resultMap="BaseResultMap">
+        select * from guest_room
+        where room_no = #{roomNo,jdbcType=VARCHAR}
+    </select>
+
+    <select id="queryAll" parameterType="java.lang.String"
+            resultMap="BaseResultMap">
+        select * from guest_room
     </select>
 
 
@@ -14,6 +43,18 @@
         update guest_room
         set phy_status=#{phyStatus,jdbcType=VARCHAR}
         where room_detail = #{roomTypeKey,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updatePhyStatusByRoomNo" parameterType="java.lang.String">
+        update guest_room
+        set phy_status=#{phyStatus,jdbcType=VARCHAR}
+        where room_no = #{roomNo,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateRoomDetailByRoomNo" parameterType="java.lang.String">
+        update guest_room
+        set room_detail=#{roomDetail,jdbcType=VARCHAR}
+        where room_no = #{roomNo,jdbcType=VARCHAR}
     </update>
 
 </mapper>
