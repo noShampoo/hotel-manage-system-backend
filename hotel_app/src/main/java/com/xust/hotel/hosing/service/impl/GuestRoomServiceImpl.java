@@ -1,7 +1,9 @@
 package com.xust.hotel.hosing.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.xust.hotel.acl_pojo.dbo.GuestRoomDO;
 import com.xust.hotel.acl_pojo.dbo.RoomInfoDO;
+import com.xust.hotel.acl_pojo.vo.GuestRoomVO;
 import com.xust.hotel.common.constantAndMapper.UniversalConstant;
 import com.xust.hotel.common.exception.*;
 import com.xust.hotel.common.restful.Result;
@@ -13,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -145,7 +150,6 @@ public class GuestRoomServiceImpl implements GuestRoomService {
                     UniversalConstant.GUEST_ROOM_TABLE_PHY_STATUS_NOT_USING)) {
                 return true;
             }
-
             log.error("modify, mapper insert error.");
             return false;
         } catch (NoSuchKeyException e) {
@@ -157,6 +161,58 @@ public class GuestRoomServiceImpl implements GuestRoomService {
         } catch (Exception e) {
             log.error("modify occur exception.", e);
             throw new InnerErrorException("add occur exception.");
+        }
+    }
+
+    @Override
+    public List<GuestRoomVO> queryAll(int page, int size) throws InnerErrorException {
+        try {
+            log.info("queryAll, page={}, size={}", page, size);
+            if (page < 0 || size <= 0) {
+                return null;
+            }
+            int count = guestRoomMapper.queryAll().size();
+            PageHelper.startPage(page, size);
+            List<GuestRoomDO> guestRoomDOS = guestRoomMapper.queryAll();
+            log.info("queryAll, guestRoomDOS={}", guestRoomDOS.toArray());
+            if (guestRoomDOS.size() == 0) {
+                return null;
+            }
+            return guestRoomDOS.stream().map(temp ->
+                    GuestRoomVO.builder()
+                    .roomNo(temp.getRoomNo())
+                    .roomDetail(temp.getRoomDetail())
+                    .roomStatus(temp.getRoomStatus())
+                    .orderNo(temp.getOrderNo())
+                    .count(count)
+                    .build()
+            ).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("queryAll occur exception.", e);
+            throw new InnerErrorException("queryAll occur exception.");
+        }
+    }
+
+    @Override
+    public GuestRoomVO querySome(String roomNo) throws InnerErrorException {
+        try {
+            log.info("queryAll, roomNo={}", roomNo);
+            if (StringUtils.isBlank(roomNo)) {
+                return null;
+            }
+            GuestRoomDO guestRoomDO = guestRoomMapper.queryByRoomNo(roomNo);
+            if (guestRoomDO == null) {
+                return null;
+            }
+            return GuestRoomVO.builder()
+                    .roomNo(guestRoomDO.getRoomNo())
+                    .roomStatus(guestRoomDO.getRoomStatus())
+                    .roomDetail(guestRoomDO.getRoomDetail())
+                    .orderNo(guestRoomDO.getOrderNo())
+                    .build();
+        } catch (Exception e) {
+            log.error("queryAll occur exception.", e);
+            throw new InnerErrorException("queryAll occur exception.");
         }
     }
 

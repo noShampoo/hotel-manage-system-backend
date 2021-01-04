@@ -240,6 +240,37 @@ public class RoomController {
         return new Result(true, StatusEnum.ERROR, null, null);
     }
 
+    @GetMapping("/all/get/{page}/{size}")
+    public Result allGuest(@PathVariable("page")int page,
+                           @PathVariable("size")int size,
+                           HttpServletRequest request) throws InnerErrorException {
+        if (page < 0 || size <= 0) {
+            log.error("allGuest, param error.page={}, size={}", page, size);
+            return new Result(true, StatusEnum.PARAM_ERROR, "param error", null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("deleteGuest, access error.");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        List<GuestRoomVO> guestRoomVOS = guestRoomService.queryAll(page, size);
+        return new Result(true, StatusEnum.OK, null, guestRoomVOS);
+    }
+
+    @GetMapping("/get/{roomNo}")
+    public Result getGuest(@PathVariable("roomNo")String roomNo,
+                           HttpServletRequest request) throws InnerErrorException {
+        if (StringUtils.isBlank(roomNo)) {
+            log.error("getGuest, roomNo is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "roomNo is null", null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("deleteGuest, access error.");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        GuestRoomVO guestRoomVO = guestRoomService.querySome(roomNo);
+        return new Result(true, StatusEnum.OK, null, guestRoomVO);
+    }
+
 
 
 }

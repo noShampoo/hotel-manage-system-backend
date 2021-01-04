@@ -1,6 +1,10 @@
 package com.xust.hotel.hosing.service;
 
+import com.xust.hotel.acl_pojo.dbo.GuestRoomDO;
+import com.xust.hotel.acl_pojo.vo.GuestRoomVO;
 import com.xust.hotel.common.exception.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -35,4 +39,19 @@ public interface GuestRoomService {
      * @return
      */
     boolean delete(String roomNo) throws NoSuchKeyException, KeyExistException, StatusErrorException, InnerErrorException, NotChangeException;
+
+    /**
+     * query all
+     * @param page
+     * @param size
+     * @return
+     */
+    List<GuestRoomVO> queryAll(int page, int size) throws InnerErrorException;
+
+    /**
+     * query some
+     * @param roomNo
+     * @return
+     */
+    GuestRoomVO querySome(String roomNo) throws InnerErrorException;
 }
