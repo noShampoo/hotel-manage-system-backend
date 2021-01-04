@@ -28,4 +28,11 @@ public interface GuestRoomService {
      * @return
      */
     boolean modify(String roomNo, String roomDetail) throws NoSuchKeyException, NotChangeException, InnerErrorException;
+
+    /**
+     * delete
+     * @param roomNo
+     * @return
+     */
+    boolean delete(String roomNo) throws NoSuchKeyException, KeyExistException, StatusErrorException, InnerErrorException, NotChangeException;
 }

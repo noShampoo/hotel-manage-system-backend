@@ -123,4 +123,42 @@ public class GuestRoomServiceImpl implements GuestRoomService {
             throw new InnerErrorException("add occur exception.");
         }
     }
+
+    @Override
+    public boolean delete(String roomNo) throws NoSuchKeyException, KeyExistException, StatusErrorException, InnerErrorException, NotChangeException {
+        try {
+            log.info("delete, roomNo={}", roomNo);
+            if (StringUtils.isBlank(roomNo)) {
+                log.error("delete, param error.roomNo={}", roomNo);
+                return false;
+            }
+            GuestRoomDO guestRoomDO = guestRoomMapper.queryByRoomNo(roomNo);
+            if (guestRoomDO == null) {
+                log.error("delete, no such roomNo.roomNo={}", roomNo);
+                throw new NoSuchKeyException("no such roomNo.");
+            }
+            if (!guestRoomDO.getRoomStatus().equals(UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_NO_PERSON)) {
+                log.error("delete, this room hosing.roomNo={}", roomNo);
+                throw new NotChangeException("this room hosing.");
+            }
+            if(guestRoomMapper.updatePhyStatusByRoomNo(roomNo,
+                    UniversalConstant.GUEST_ROOM_TABLE_PHY_STATUS_NOT_USING)) {
+                return true;
+            }
+
+            log.error("modify, mapper insert error.");
+            return false;
+        } catch (NoSuchKeyException e) {
+            log.error("modify, no such roomDetail.", e);
+            throw new NoSuchKeyException("no such roomDetail.");
+        } catch (NotChangeException e) {
+            log.error("modify, this room hosing.", e);
+            throw new NotChangeException("this room hosing");
+        } catch (Exception e) {
+            log.error("modify occur exception.", e);
+            throw new InnerErrorException("add occur exception.");
+        }
+    }
+
+
 }

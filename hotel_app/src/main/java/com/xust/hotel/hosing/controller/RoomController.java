@@ -194,24 +194,49 @@ public class RoomController {
     public Result modifyGuest(@RequestBody RequestParam<GuestRoomVO> requestParam,
                            HttpServletRequest request) throws InnerErrorException, StatusErrorException, KeyExistException, NoSuchKeyException, NotChangeException {
         if (requestParam == null || requestParam.getData() == null) {
-            log.error("addGuest, param is null.");
+            log.error("modifyGuest, param is null.");
             return new Result(true, StatusEnum.PARAM_ERROR, "param error", null);
         }
         if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
-            log.error("all, access error.");
+            log.error("modifyGuest, access error.");
             return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
         }
         GuestRoomVO data = requestParam.getData();
         String roomNo = data.getRoomNo();
         String roomDetail = data.getRoomDetail();
         if (StringUtils.isBlank(roomNo) || StringUtils.isBlank(roomDetail)) {
-            log.error("addGuest, param's data error.data={}", data);
+            log.error("modifyGuest, param's data error.data={}", data);
             return new Result(true, StatusEnum.PARAM_ERROR, "data:" + data.toString(), null);
         }
         if (guestRoomService.modify(roomNo, roomDetail)) {
             return new Result(true, StatusEnum.OK, null, null);
         }
-        log.error("addGuest, service add error.data={}", data.toString());
+        log.error("modifyGuest, service modifyGuest error.data={}", data.toString());
+        return new Result(true, StatusEnum.ERROR, null, null);
+    }
+
+
+    @PostMapping("/delete")
+    public Result deleteGuest(@RequestBody RequestParam<GuestRoomVO> requestParam,
+                              HttpServletRequest request) throws Exception {
+        if (requestParam == null || requestParam.getData() == null) {
+            log.error("deleteGuest, param is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "param error", null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+            log.error("deleteGuest, access error.");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        GuestRoomVO data = requestParam.getData();
+        String roomNo = data.getRoomNo();
+        if (StringUtils.isBlank(roomNo)) {
+            log.error("deleteGuest, param's data error.data={}", data);
+            return new Result(true, StatusEnum.PARAM_ERROR, "data:" + data.toString(), null);
+        }
+        if (guestRoomService.delete(roomNo)) {
+            return new Result(true, StatusEnum.OK, null, null);
+        }
+        log.error("deleteGuest, service deleteGuest error.data={}", data.toString());
         return new Result(true, StatusEnum.ERROR, null, null);
     }
 
