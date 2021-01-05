@@ -1,6 +1,7 @@
 package com.xust.hotel.acl_interceptor;
 
 import com.xust.hotel.common.dto.LoginUserPojo;
+import com.xust.hotel.common.exception.AccessException;
 import com.xust.hotel.common.exception.ExpiredException;
 import com.xust.hotel.common.security.CryptUtil;
 import com.xust.hotel.common.security.JwtConstantConfig;
@@ -61,8 +62,12 @@ public class JwtInterceptor implements HandlerInterceptor {
                 }
                 redisTemplate.opsForValue().set(loginUserDTO.getUser(), header, 2, TimeUnit.HOURS);
                 request.setAttribute(JwtConstantConfig.REQ_ATTRIBUTE_KEY, loginUserDTO);
+            } catch (ExpiredException e) {
+                log.error("preHandle, expired.", e);
+                throw new ExpiredException("expired.");
             } catch (Exception e) {
-                throw new RuntimeException("令牌不正确");
+                log.error("令牌不正确");
+                throw new AccessException("令牌不正确");
             }
         }
         return true;

@@ -75,4 +75,12 @@ public interface GuestRoomMapper {
      * @return
      */
     List<GuestRoomDO> queryAll();
+
+    /**
+     * update
+     * @param guestStatus
+     * @param orderNo
+     * @return
+     */
+    boolean updateGuestRoomAndOrderNoStatusByRoomNo(String guestStatus, String orderNo, String roomNo);
 }

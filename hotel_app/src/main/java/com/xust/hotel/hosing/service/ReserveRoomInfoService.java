@@ -1,5 +1,8 @@
 package com.xust.hotel.hosing.service;
 
+import com.xust.hotel.acl_pojo.vo.ReserveVO;
+import com.xust.hotel.common.exception.*;
+
 /**
  * <p>
  * 预定信息单 服务类
@@ -10,4 +13,10 @@ package com.xust.hotel.hosing.service;
  */
 public interface ReserveRoomInfoService {
 
+    /**
+     * reserve
+     * @param data
+     * @return
+     */
+    boolean reserveRoom(ReserveVO data) throws CustomerInfoException, CanNotReserveException, AccessException, NoSuchKeyException, InnerErrorException;
 }

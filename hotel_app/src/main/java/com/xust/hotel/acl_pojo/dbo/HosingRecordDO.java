@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.xust.hotel.common.dto.BasePojo;
 import lombok.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 操作轨迹单
@@ -29,24 +31,9 @@ public class HosingRecordDO extends BasePojo {
     private String orderNo;
 
     /**
-     * 入住人
+     * hosing person info
      */
-    private String hosingName;
-
-    /**
-     * 入住人电话
-     */
-    private String hosingPhone;
-
-    /**
-     * 入住人证件类型
-     */
-    private String hosingIdenType;
-
-    /**
-     * 入住人证件号码
-     */
-    private String hosingIdenNum;
+    private String customerInfo;
 
     /**
      * 操作时间

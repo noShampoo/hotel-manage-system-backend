@@ -18,12 +18,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class HosingRecordServiceImpl implements HosingRecordService {
 
-    @Autowired
-    private HosingRecordMapper hosingRecordMapper;
-
-
-    @Override
-    public void test() {
-        log.info("data={}", hosingRecordMapper.queryAll().toArray());
-    }
 }

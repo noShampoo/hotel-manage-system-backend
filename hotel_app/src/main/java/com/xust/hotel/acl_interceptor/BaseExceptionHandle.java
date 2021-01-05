@@ -63,4 +63,25 @@ public class BaseExceptionHandle {
         log.error("statusError");
         return new Result(false, StatusEnum.STATUS_ERROR, null, null);
     }
+
+    @ResponseBody
+    @ExceptionHandler(value = CustomerInfoException.class)
+    public Result customerError() {
+        log.error("customerError");
+        return new Result(false, StatusEnum.CUSTOMER_INFO_ERROR,null, null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = AccessException.class)
+    public Result accessError() {
+        log.error("accessError");
+        return new Result(false, StatusEnum.ACCESS_ERROR, null, null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = CanNotReserveException.class)
+    public Result canNotReserve() {
+        log.error("canNotReserve");
+        return new Result(false, StatusEnum.CAN_NOT_RESERVE, null, null);
+    }
 }

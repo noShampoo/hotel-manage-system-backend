@@ -57,4 +57,10 @@
         where room_no = #{roomNo,jdbcType=VARCHAR}
     </update>
 
+    <update id="updateGuestRoomAndOrderNoStatusByRoomNo" parameterType="java.lang.String">
+        update guest_room
+        set room_status=#{guestStatus,jdbcType=VARCHAR}, order_no = #{orderNo,jdbcType=VARCHAR}
+        where room_no = #{roomNo,jdbcType=VARCHAR}
+    </update>
+
 </mapper>

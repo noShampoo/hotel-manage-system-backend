@@ -29,7 +29,7 @@ public enum StatusEnum implements Serializable {
     /**
      * 权限不足
      */
-    ACCESS_ERROR(20003, "远程调用失败"),
+    ACCESS_ERROR(20003, "权限不足"),
 
     /**
      * 远程调用失败
@@ -57,6 +57,16 @@ public enum StatusEnum implements Serializable {
     USER_NOT_FOUND(2008, "用户不存在"),
 
     /**
+     * 客户信息有误
+     */
+    CUSTOMER_INFO_ERROR(20009, "客户信息有误"),
+
+    /**
+     * can't reserve error
+     */
+    CAN_NOT_RESERVE(30000, "无法预定"),
+
+    /**
      * can't delete
      */
     CAN_NOT_DELETE(30001, "无法删除"),
@@ -81,7 +91,6 @@ public enum StatusEnum implements Serializable {
      */
     INNER_ERROR(50000, "内部异常")
     ;
-
     /**
      * 状态码
      */

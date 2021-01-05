@@ -26,4 +26,14 @@ public class UniversalConstant {
     public static final String GUEST_ROOM_TABLE_PHY_STATUS_NOT_USING = "ps0";
 
     public static final String GUEST_ROOM_TABLE_PHY_STATUS_USING = "ps1";
+
+    public static final String ROOM_OPERATE_STATUS_RESERVE = "rt0";
+
+    public static final String ROOM_OPERATE_STATUS_OVER = "rt1";
+
+    public static final String ROOM_OPERATE_STATUS_CHANCEL = "rt2";
+
+    public static final String ROOM_OPERATE_STATUS_ING = "rt3";
+
+    public static final String HOSING_RECORD_FEATURE_OPERATE_CONTENT = "operate_content";
 }
