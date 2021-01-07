@@ -116,7 +116,7 @@ public class ReserveRoomInfoServiceImpl implements ReserveRoomInfoService {
                     .operateEvent(UniversalConstant.ROOM_OPERATE_STATUS_RESERVE)
                     .operateObj(data.getRoomNo())
                     .operateTime(operateTime)
-                    .feature(new HashMap<String, String>().put(UniversalConstant.HOSING_RECORD_FEATURE_OPERATE_CONTENT, data.getReserveTime()))
+                    .feature(UniversalConstant.HOSING_RECORD_FEATURE_OPERATE_CONTENT + ":" + data.getReserveTime())
                     .build();
 
             /*

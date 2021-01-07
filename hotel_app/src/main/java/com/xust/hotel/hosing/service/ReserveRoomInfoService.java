@@ -19,4 +19,12 @@ public interface ReserveRoomInfoService {
      * @return
      */
     boolean reserveRoom(ReserveVO data) throws CustomerInfoException, CanNotReserveException, AccessException, NoSuchKeyException, InnerErrorException;
+
+
+    /**
+     * chancel
+     * @param data
+     * @return
+     */
+//    public boolean chancelRoom(ReserveVO data);
 }
