@@ -271,6 +271,26 @@ public class RoomController {
         return new Result(true, StatusEnum.OK, null, guestRoomVO);
     }
 
+    @GetMapping("/get/typeKey/{roomKey}/{page}/{size}")
+    public Result getByKey(@PathVariable("roomKey")String roomKey,
+                           @PathVariable("page")int page,
+                           @PathVariable("size")int size,
+                           HttpServletRequest request) throws InnerErrorException {
+        if (StringUtils.isBlank(roomKey)) {
+            log.error("getByKey, roomNo is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "roomNo is null", null);
+        }
+        if (page < 0 || size <= 0) {
+            log.error("getByKey, param error");
+            return  new Result(true, StatusEnum.PARAM_ERROR, "roomNo is null", null);
+        }
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN, JwtConstantConfig.USER_ROLE_NORMAL)) {
+            log.error("getByKey, access error.");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        List<GuestRoomVO> guestRoomVOS = guestRoomService.queryByRoomKey(roomKey, page, size);
+        return new Result(true, StatusEnum.OK, null, guestRoomVOS);
+    }
 
 
 }

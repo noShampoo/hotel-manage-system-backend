@@ -214,5 +214,34 @@ public class GuestRoomServiceImpl implements GuestRoomService {
         }
     }
 
+    @Override
+    public List<GuestRoomVO> queryByRoomKey(String roomKey, int page, int size) throws InnerErrorException {
+        try {
+            log.info("queryByRoomKey, roomKey={}, page={}, size={}", roomKey, page, size);
+            if (StringUtils.isBlank(roomKey)) {
+                log.error("queryByRoomKey, param is null");
+                return null;
+            }
+            if (page < 0 || size <= 0) {
+                log.error("queryByRoomKey, param error");
+                return null;
+            }
+            int count = guestRoomMapper.queryByRoomDetail(roomKey).size();
+            PageHelper.startPage(page, size);
+            List<GuestRoomDO> guestRoomDOS = guestRoomMapper.queryByRoomDetail(roomKey);
+            return guestRoomDOS.stream().map(temp -> GuestRoomVO.builder()
+                    .roomNo(temp.getRoomNo())
+                    .roomDetail(temp.getRoomDetail())
+                    .orderNo(temp.getOrderNo())
+                    .roomStatus(temp.getRoomStatus())
+                    .count(count)
+                    .build()
+            ).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("queryByRoomKey.", e);
+            throw new InnerErrorException("queryByRoomKey");
+        }
+    }
+
 
 }

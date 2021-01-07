@@ -54,4 +54,9 @@ public interface GuestRoomService {
      * @return
      */
     GuestRoomVO querySome(String roomNo) throws InnerErrorException;
+
+    /**
+     * query by roomKey
+     */
+    List<GuestRoomVO> queryByRoomKey(String roomKey, int page, int size) throws InnerErrorException;
 }
