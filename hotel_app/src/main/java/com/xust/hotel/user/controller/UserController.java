@@ -1,6 +1,8 @@
 package com.xust.hotel.user.controller;
 
 import com.google.common.collect.Maps;
+import com.xust.hotel.acl_pojo.dbo.UserDO;
+import com.xust.hotel.common.dto.LoginUserPojo;
 import com.xust.hotel.common.exception.InnerErrorException;
 import com.xust.hotel.common.restful.RequestParam;
 import com.xust.hotel.common.restful.Result;
@@ -13,6 +15,7 @@ import com.xust.hotel.acl_pojo.dto.UserDTO;
 import com.xust.hotel.acl_pojo.vo.UserVO;
 import com.xust.hotel.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +25,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author bhj
@@ -41,6 +46,44 @@ public class UserController {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+
+
+    /**
+     * get login info by token
+     */
+    @PostMapping("/login/getInfo")
+    public Result getLoginInfo(@RequestBody RequestParam<Map<String, String>> requestParam) throws InnerErrorException {
+        if (requestParam == null || MapUtils.isEmpty(requestParam.getData())) {
+            log.error("getLoginInfo, param is null.");
+            return new Result(true, StatusEnum.PARAM_ERROR, "param is null", null);
+        }
+        String token = requestParam.getData().get("token");
+        Set<String> users = redisTemplate.keys("*");
+        if (CollectionUtils.isEmpty(users)) {
+            log.error("getLoginInfo, redis has no user");
+            return new Result(true, StatusEnum.ERROR, null, null);
+        }
+        token = CryptUtil.decrypt(token);
+        if (token == null) {
+            log.error("getLoginInfo, decrypt error.token={}", token);
+            return new Result(true, StatusEnum.ERROR, null, null);
+        }
+        token = token.substring(JwtConstantConfig.SUB_START_NUM);
+        token = token.substring(0, token.length() - JwtConstantConfig.SUB_END_NUM);
+        LoginUserPojo loginUserDTO = jwtUtil.getLoginUserDTO(token);
+        if (loginUserDTO != null && users.contains(loginUserDTO.getUser())) {
+            UserDO userInfoByUser = userService.getUserInfoByUser(loginUserDTO.getUser());
+            if (userInfoByUser == null) {
+                return new Result(true, StatusEnum.ERROR, null, null);
+            }
+            userInfoByUser.setPassword(loginUserDTO.getPassword());
+            return new Result(true, StatusEnum.OK, null, userInfoByUser);
+        }
+        log.error("getLoginInfo, no login info");
+        return new Result(true, StatusEnum.ERROR, null, null);
+    }
+
+
     /**
      * register admin
      */

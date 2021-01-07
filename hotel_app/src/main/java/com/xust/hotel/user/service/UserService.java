@@ -1,5 +1,6 @@
 package com.xust.hotel.user.service;
 
+import com.xust.hotel.acl_pojo.dbo.UserDO;
 import com.xust.hotel.common.exception.InnerErrorException;
 import com.xust.hotel.acl_pojo.dto.UserDTO;
 import com.xust.hotel.acl_pojo.vo.UserVO;
@@ -10,6 +11,9 @@ import java.util.List;
  * @author bhj
  */
 public interface UserService {
+
+
+    public UserDO getUserInfoByUser(String user) throws InnerErrorException;
 
     /**
      * match

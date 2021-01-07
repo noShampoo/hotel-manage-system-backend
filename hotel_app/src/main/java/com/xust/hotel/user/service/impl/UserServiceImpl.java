@@ -37,6 +37,22 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
+    public UserDO getUserInfoByUser(String user) throws InnerErrorException {
+        try {
+            if (StringUtils.isBlank(user)) {
+                log.error("getUserInfoByUser, user is null");
+                return null;
+            }
+            UserDO userDO = userMapper.selectByUser(user);
+            log.info("getUserInfoByUser, userDO={}", userDO);
+            return userDO;
+        } catch (Exception e) {
+            log.error("getUserInfoByUser occur exception", e);
+            throw new InnerErrorException("error");
+        }
+    }
+
+    @Override
     public boolean matchUserToPass(String user, String password, String type) throws InnerErrorException {
         try {
             if (StringUtils.isBlank(user) || StringUtils.isBlank(password)) {
