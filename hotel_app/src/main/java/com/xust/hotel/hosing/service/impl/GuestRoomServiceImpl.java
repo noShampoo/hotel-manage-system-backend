@@ -6,8 +6,6 @@ import com.xust.hotel.acl_pojo.dbo.RoomInfoDO;
 import com.xust.hotel.acl_pojo.vo.GuestRoomVO;
 import com.xust.hotel.common.constantAndMapper.UniversalConstant;
 import com.xust.hotel.common.exception.*;
-import com.xust.hotel.common.restful.Result;
-import com.xust.hotel.common.restful.StatusEnum;
 import com.xust.hotel.hosing.mapper.GuestRoomMapper;
 import com.xust.hotel.hosing.mapper.RoomInfoMapper;
 import com.xust.hotel.hosing.service.GuestRoomService;
@@ -49,7 +47,7 @@ public class GuestRoomServiceImpl implements GuestRoomService {
             }
             if (!roomStatus.equals(UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_NO_PERSON)
                     && !roomStatus.equals(UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_PERSON)
-                    && !roomStatus.equals(UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_REVERSE)) {
+                    && !roomStatus.equals(UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_RESERVE)) {
                 log.error("add, param error.roomNo={}, roomDetail={}, roomStatus={}", roomNo, roomDetail
                         , roomStatus);
                 throw new StatusErrorException("status error.");

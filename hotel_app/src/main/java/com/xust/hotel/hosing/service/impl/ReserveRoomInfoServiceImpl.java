@@ -22,10 +22,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.HashMap;
 
 /**
  * <p>
@@ -54,14 +54,15 @@ public class ReserveRoomInfoServiceImpl implements ReserveRoomInfoService {
     @Autowired
     private HosingRecordMapper hosingRecordMapper;
 
+    @Transactional(rollbackFor = MapperErrorException.class)
     @Override
-    public boolean reserveRoom(ReserveVO data) throws CustomerInfoException, CanNotReserveException, AccessException, NoSuchKeyException, InnerErrorException {
+    public String reserveRoom(ReserveVO data) throws CustomerInfoException, CanNotReserveException, AccessException, NoSuchKeyException, InnerErrorException, MapperErrorException {
         try {
             log.info("reserveRoom, data={}", data);
             if (StringUtils.isBlank(data.getRoomNo()) || data.getReserveDay() == null || data.getReserveDay() < 1
                     || StringUtils.isBlank(data.getReserveTime()) || CollectionUtils.isEmpty(data.getCustomerInfo())) {
                 log.error("reserveRoom, param error.data={}", data.toString());
-                return false;
+                return null;
             }
             if (!UniversalUtil.checkCustomerInfoList(data.getCustomerInfo())) {
                 log.error("reserveRoom, customerInfo error.");
@@ -87,7 +88,7 @@ public class ReserveRoomInfoServiceImpl implements ReserveRoomInfoService {
             String token = CryptUtil.decrypt(header);
             if (StringUtils.isBlank(token)) {
                 log.error("resereveRoom, token is null");
-                return false;
+                return null;
             }
             token = token.substring(JwtConstantConfig.SUB_START_NUM);
             token = token.substring(0, token.length() - JwtConstantConfig.SUB_END_NUM);
@@ -125,36 +126,26 @@ public class ReserveRoomInfoServiceImpl implements ReserveRoomInfoService {
             try {
                 boolean flagReserve = reserveRoomInfoMapper.insertDynamic(reserveRoomInfoDO);
                 log.info("reserveRoom, flagReserve={}", flagReserve);
-                if (!flagReserve) {
-                    throw new CanNotReserveException("reserveRoomInfoMapper error");
-                }
+
                 boolean flagGuestRoom = guestRoomMapper.updateGuestRoomAndOrderNoStatusByRoomNo(
-                                UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_REVERSE, orderNo, data.getRoomNo()
+                                UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_RESERVE, orderNo, data.getRoomNo()
                 );
                 log.info("reserveRoom, flagGuestRoom={}", flagGuestRoom);
-                if (!flagGuestRoom) {
-                    throw new CanNotReserveException("guestRoomMapper error");
-                }
+
                 boolean flagRecord = hosingRecordMapper.addRecordDynamic(hosingRecordDO);
                 log.info("reserveRoom, flagRecord={}", flagRecord);
-                if (!flagRecord) {
-                    throw new CanNotReserveException("hosingRecordMapper error");
+                if (flagGuestRoom && flagRecord && flagReserve) {
+                    return orderNo;
                 }
-
-                return true;
+                log.error("mapper reserve error.");
+                throw new MapperErrorException("mapper reserve error.");
             } catch (Exception e) {
-                for (int i = 0; i < 5; i++) {
-                    if (reserveRoomInfoMapper.deleteByRoomNo(data.getRoomNo())
-                            && guestRoomMapper.updateGuestRoomAndOrderNoStatusByRoomNo(
-                            UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_NO_PERSON, null,
-                            data.getRoomNo())) {
-                        log.error("rollback, i={}", i);
-                        break;
-                    }
-                }
-                log.error("reserveRoom, mapper error. cann't reserve room.data={}", data);
-                throw new CanNotReserveException("reserve error.");
+                log.error("mapper reserve error.");
+                throw new MapperErrorException("mapper reserve error.");
             }
+        } catch (MapperErrorException e) {
+            log.error("reserveRoom, mapper reserve error.");
+            throw new MapperErrorException("mapper reserve error.");
         } catch (NoSuchKeyException e) {
             log.error("reserveRoom, no such roomNo.");
             throw new NoSuchKeyException("no such roomNo");
@@ -172,6 +163,80 @@ public class ReserveRoomInfoServiceImpl implements ReserveRoomInfoService {
             throw new InnerErrorException("reserveRoom.");
         }
     }
+
+    @Transactional(rollbackFor = MapperErrorException.class)
+    @Override
+    public boolean chancelRoom(ReserveVO data) throws NoSuchFieldException, ChancelReserveErrorException, BizInfoErrorException, MapperErrorException {
+        try {
+            log.info("chancelRoom, data={}", data.toString());
+            if (StringUtils.isBlank(data.getOrderNo()) || StringUtils.isBlank(data.getRoomNo())) {
+                return false;
+            }
+            GuestRoomDO guestRoomDO = guestRoomMapper.queryByRoomNo(data.getRoomNo());
+            if (guestRoomDO == null) {
+                log.error("chancelRoom, this roomNo isn't exist.");
+                throw new NoSuchKeyException("no such roomNo");
+            }
+            if (guestRoomDO.getPhyStatus().equals(UniversalConstant.GUEST_ROOM_TABLE_PHY_STATUS_NOT_USING)) {
+                log.error("chancelRoom, this room not using.");
+                throw new NoSuchKeyException("this room not using");
+            }
+            log.info("chancelRoom, guestRoomDO={}", guestRoomDO.toString());
+            if (!guestRoomDO.getRoomStatus().equals(UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_RESERVE)
+                    || StringUtils.isBlank(guestRoomDO.getOrderNo())) {
+                log.error("chancelRoom, this room isn't reserved room");
+                throw new ChancelReserveErrorException("can't reserve.");
+            }
+            if (!data.getOrderNo().equals(guestRoomDO.getOrderNo())) {
+                log.error("chancelRoom, this room is reserved by another order.orderNo differently");
+                throw new NoSuchKeyException("orderNo differently");
+            }
+            ReserveRoomInfoDO reserveRoomInfoDO = reserveRoomInfoMapper.queryByOrderNo(data.getOrderNo());
+            if (!data.getRoomNo().equals(reserveRoomInfoDO.getReserveRoomNo())
+                    || !UniversalConstant.ROOM_OPERATE_STATUS_RESERVE.equals(reserveRoomInfoDO.getReserveStatus())) {
+                log.error("chancelRoom, biz info error.roomNo={}, reserveStatus={}", reserveRoomInfoDO.getReserveRoomNo(), reserveRoomInfoDO.getReserveStatus());
+                log.error("chancelRoom, biz info error.reserveRoomInfoDo={}", reserveRoomInfoDO.toString());
+                throw new BizInfoErrorException("biz info error");
+            }
+            String header = request.getHeader(JwtConstantConfig.HEADER_KEY);
+            String token = CryptUtil.decrypt(header);
+            if (StringUtils.isBlank(token)) {
+                log.error("chancelRoom, token is null");
+                return false;
+            }
+            token = token.substring(JwtConstantConfig.SUB_START_NUM);
+            token = token.substring(0, token.length() - JwtConstantConfig.SUB_END_NUM);
+            String operateCp = jwtUtil.getLoginUserDTO(token).getUser();
+            String operateTime = new Date(System.currentTimeMillis()).toString();
+
+            try {
+                boolean b = reserveRoomInfoMapper.updateReserveInfo(data.getOrderNo(), UniversalConstant.ROOM_OPERATE_STATUS_CHANCEL, operateCp, operateTime);
+                boolean b1 = guestRoomMapper.updateGuestRoomAndOrderNoStatusByRoomNo(UniversalConstant.GUEST_ROOM_TABLE_R_STATUS_NO_PERSON, null, data.getRoomNo());
+                if (b && b1) {
+                    return true;
+                }
+                log.error("chancel, mapper chancel error.");
+                throw new MapperErrorException("chancel error");
+            } catch (Exception e) {
+                log.error("chancel error", e);
+                throw new MapperErrorException("chancel error");
+            }
+        } catch (MapperErrorException e) {
+            log.error("chancelRoom, chancel error");
+            throw new MapperErrorException("chancel error");
+        } catch (NoSuchKeyException e) {
+            log.error("chancelRoom, no such key.", e);
+            throw new NoSuchFieldException("no such key");
+        } catch (ChancelReserveErrorException e) {
+            log.error("chancelRoom, chancel error.");
+            throw new ChancelReserveErrorException("chancel error");
+        } catch (BizInfoErrorException e) {
+            log.error("chancelRoom, biz info error.", e);
+            throw new BizInfoErrorException("biz info error");
+        }
+    }
+
+
 
 
 }

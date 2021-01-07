@@ -84,4 +84,23 @@ public class BaseExceptionHandle {
         log.error("canNotReserve");
         return new Result(false, StatusEnum.CAN_NOT_RESERVE, null, null);
     }
+
+    @ResponseBody
+    @ExceptionHandler(value = ChancelReserveErrorException.class)
+    public Result canNotChancel() {
+        log.error("canNotChancel");
+        return new Result(false, StatusEnum.CAN_NOT_CHANCEL, null, null);
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = BizInfoErrorException.class)
+    public Result bizInfoError() {
+        log.error("bizInfoError");
+        return new Result(false, StatusEnum.BIZ_INFO_ERROR, null, null);
+    }
+
+    public Result mapperError() {
+        log.error("mapperError");
+        return new Result(false, StatusEnum.CAN_NOT_OPERATE, null, null);
+    }
 }

@@ -21,7 +21,7 @@ public class UniversalConstant {
 
     public static final String GUEST_ROOM_TABLE_R_STATUS_PERSON = "rs1";
 
-    public static final String GUEST_ROOM_TABLE_R_STATUS_REVERSE = "rs2";
+    public static final String GUEST_ROOM_TABLE_R_STATUS_RESERVE = "rs2";
 
     public static final String GUEST_ROOM_TABLE_PHY_STATUS_NOT_USING = "ps0";
 

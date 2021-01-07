@@ -1,9 +1,7 @@
 package com.xust.hotel.hosing.mapper;
 
 import com.xust.hotel.acl_pojo.dbo.ReserveRoomInfoDO;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -36,4 +34,20 @@ public interface ReserveRoomInfoMapper {
      */
     @Delete("delete from reserve_room_info where reserve_room_no = #{roomNo}")
     boolean deleteByRoomNo(String roomNo);
+
+
+    /**
+     * queryByOrderNo
+     * @param orderNo
+     * @return
+     */
+    @Select("select * from reserve_room_info where order_no = #{orderNo}")
+    ReserveRoomInfoDO queryByOrderNo(String orderNo);
+
+    /**
+     * update reserve info
+     */
+    @Update("update reserve_room_info set reserve_status = #{reserve_status}, " +
+            "operate_cp = #{operate_cp}, operate_time = #{operate_time} where order_no = #{orderNo}")
+    boolean updateReserveInfo(String orderNo, String reserve_status, String operate_cp, String operate_time);
 }

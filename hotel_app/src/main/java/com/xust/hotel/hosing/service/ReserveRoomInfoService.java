@@ -18,7 +18,7 @@ public interface ReserveRoomInfoService {
      * @param data
      * @return
      */
-    boolean reserveRoom(ReserveVO data) throws CustomerInfoException, CanNotReserveException, AccessException, NoSuchKeyException, InnerErrorException;
+    String reserveRoom(ReserveVO data) throws CustomerInfoException, CanNotReserveException, AccessException, NoSuchKeyException, InnerErrorException, MapperErrorException;
 
 
     /**
@@ -26,5 +26,5 @@ public interface ReserveRoomInfoService {
      * @param data
      * @return
      */
-//    public boolean chancelRoom(ReserveVO data);
+    public boolean chancelRoom(ReserveVO data) throws NoSuchFieldException, ChancelReserveErrorException, BizInfoErrorException, MapperErrorException;
 }

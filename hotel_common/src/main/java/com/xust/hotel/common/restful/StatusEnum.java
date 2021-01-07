@@ -87,6 +87,21 @@ public enum StatusEnum implements Serializable {
     STATUS_ERROR(30004, "status error"),
 
     /**
+     * can not chancel
+     */
+    CAN_NOT_CHANCEL(30005, "取消失败"),
+
+    /**
+     * BIZ_INFO_ERROR
+     */
+    BIZ_INFO_ERROR(30006, "业务信息错误"),
+
+    /**
+     * can not operate
+     */
+    CAN_NOT_OPERATE(30007, "无法操作"),
+
+    /**
      * inner error
      */
     INNER_ERROR(50000, "内部异常")
