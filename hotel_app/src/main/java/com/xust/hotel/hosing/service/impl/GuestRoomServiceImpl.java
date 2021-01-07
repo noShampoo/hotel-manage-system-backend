@@ -1,6 +1,7 @@
 package com.xust.hotel.hosing.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Maps;
 import com.xust.hotel.acl_pojo.dbo.GuestRoomDO;
 import com.xust.hotel.acl_pojo.dbo.RoomInfoDO;
 import com.xust.hotel.acl_pojo.vo.GuestRoomVO;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -240,6 +242,22 @@ public class GuestRoomServiceImpl implements GuestRoomService {
         } catch (Exception e) {
             log.error("queryByRoomKey.", e);
             throw new InnerErrorException("queryByRoomKey");
+        }
+    }
+
+    @Override
+    public Map<String, Integer> queryCount() throws InnerErrorException {
+        try {
+            Map<String, Integer> res = Maps.newHashMap();
+            List<RoomInfoDO> roomInfoDOS = roomInfoMapper.queryAll();
+            for (RoomInfoDO roomInfoDO : roomInfoDOS) {
+                int count = guestRoomMapper.countByRoomTypeKey(roomInfoDO.getRoomTypeKey());
+                res.put(roomInfoDO.getRoomTypeKey(), count);
+            }
+            return res;
+        } catch (Exception e) {
+            log.error("queryCount occur exception.", e);
+            throw new InnerErrorException();
         }
     }
 

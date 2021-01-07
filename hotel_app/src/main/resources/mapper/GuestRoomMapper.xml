@@ -32,6 +32,10 @@
         where room_no = #{roomNo,jdbcType=VARCHAR}
     </select>
 
+    <select id="countByRoomTypeKey" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(1) from guest_room where room_detail = #{roomTypeKey,jdbcType=VARCHAR} and phy_status = 'ps1'
+    </select>
+
     <select id="queryAll" parameterType="java.lang.String"
             resultMap="BaseResultMap">
         select * from guest_room

@@ -36,6 +36,20 @@ public class RoomController {
     private GuestRoomService guestRoomService;
 
     /**
+     * get room count
+     */
+    @GetMapping("/room/count")
+    public Result queryCount(HttpServletRequest request) throws InnerErrorException {
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN, JwtConstantConfig.USER_ROLE_NORMAL)) {
+            log.error("queryCount, access error.");
+            return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
+        }
+        Map<String, Integer> countMap = guestRoomService.queryCount();
+        return new Result(true, StatusEnum.OK, null, countMap);
+    }
+
+
+    /**
      * add room type
      */
     @PostMapping("/detail/add")
@@ -167,7 +181,7 @@ public class RoomController {
             log.error("addGuest, param is null.");
             return new Result(true, StatusEnum.PARAM_ERROR, "param error", null);
         }
-        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN, JwtConstantConfig.USER_ROLE_NORMAL)) {
             log.error("all, access error.");
             return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
         }

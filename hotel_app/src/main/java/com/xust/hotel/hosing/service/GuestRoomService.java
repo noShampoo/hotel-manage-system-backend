@@ -5,6 +5,7 @@ import com.xust.hotel.acl_pojo.vo.GuestRoomVO;
 import com.xust.hotel.common.exception.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -59,4 +60,10 @@ public interface GuestRoomService {
      * query by roomKey
      */
     List<GuestRoomVO> queryByRoomKey(String roomKey, int page, int size) throws InnerErrorException;
+
+    /**
+     * query count
+     * @return
+     */
+    Map<String, Integer> queryCount() throws InnerErrorException;
 }

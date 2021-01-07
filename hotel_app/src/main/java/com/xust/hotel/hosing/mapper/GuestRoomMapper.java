@@ -83,4 +83,11 @@ public interface GuestRoomMapper {
      * @return
      */
     boolean updateGuestRoomAndOrderNoStatusByRoomNo(String guestStatus, String orderNo, String roomNo);
+
+    /**
+     * count
+     * @param roomTypeKey
+     * @return
+     */
+    int countByRoomTypeKey(String roomTypeKey);
 }
