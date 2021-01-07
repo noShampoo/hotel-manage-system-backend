@@ -36,4 +36,8 @@ public class UniversalConstant {
     public static final String ROOM_OPERATE_STATUS_ING = "rt3";
 
     public static final String HOSING_RECORD_FEATURE_OPERATE_CONTENT = "operate_content";
+
+    public static final String RESERVE_INFO_QUERY_PARAM_TYPE_ROOM_NO = "roomNo";
+
+    public static final String RESERVE_INFO_QUERY_PARAM_TYPE_ORDER_NO = "orderNo";
 }

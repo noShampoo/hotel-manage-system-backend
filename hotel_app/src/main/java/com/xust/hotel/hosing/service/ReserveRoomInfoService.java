@@ -3,6 +3,8 @@ package com.xust.hotel.hosing.service;
 import com.xust.hotel.acl_pojo.vo.ReserveVO;
 import com.xust.hotel.common.exception.*;
 
+import java.util.List;
+
 /**
  * <p>
  * 预定信息单 服务类
@@ -26,5 +28,22 @@ public interface ReserveRoomInfoService {
      * @param data
      * @return
      */
-    public boolean chancelRoom(ReserveVO data) throws NoSuchFieldException, ChancelReserveErrorException, BizInfoErrorException, MapperErrorException;
+    public boolean chancelRoom(ReserveVO data) throws NoSuchFieldException, ChancelReserveErrorException, BizInfoErrorException, MapperErrorException, InnerErrorException;
+
+    /**
+     * query
+     * @param page
+     * @param size
+     * @return
+     */
+    public List<ReserveVO> queryAll(int page, int size, String status) throws InnerErrorException;
+
+    /**
+     * query some
+     * @param paramType
+     * @param param
+     * @return
+     * @throws InnerErrorException
+     */
+    public ReserveVO queryDynamic(String paramType, String param) throws InnerErrorException;
 }

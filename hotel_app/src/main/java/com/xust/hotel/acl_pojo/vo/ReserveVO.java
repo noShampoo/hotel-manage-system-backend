@@ -43,6 +43,27 @@ public class ReserveVO extends BasePojo {
      */
     private String orderNo;
 
+    /**
+     * rt0->已预定,rt1->已消费,rt2->已取消
+     */
+    private String reserveStatus;
+
+    /**
+     * 当前操作人登录账号
+     */
+    private String operateCp;
+
+    /**
+     * 操作时间
+     */
+    private String operateTime;
+
+    /**
+     * count
+     * @return
+     */
+    private Integer count;
+
 
     @Override
     public String toString() {

@@ -1,7 +1,10 @@
 package com.xust.hotel.hosing.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.util.StringUtil;
+import com.xust.hotel.acl_pojo.dbo.CustomerInfoPojo;
 import com.xust.hotel.acl_pojo.dbo.GuestRoomDO;
 import com.xust.hotel.acl_pojo.dbo.HosingRecordDO;
 import com.xust.hotel.acl_pojo.dbo.ReserveRoomInfoDO;
@@ -26,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -166,7 +171,7 @@ public class ReserveRoomInfoServiceImpl implements ReserveRoomInfoService {
 
     @Transactional(rollbackFor = MapperErrorException.class)
     @Override
-    public boolean chancelRoom(ReserveVO data) throws NoSuchFieldException, ChancelReserveErrorException, BizInfoErrorException, MapperErrorException {
+    public boolean chancelRoom(ReserveVO data) throws NoSuchFieldException, ChancelReserveErrorException, BizInfoErrorException, MapperErrorException, InnerErrorException {
         try {
             log.info("chancelRoom, data={}", data.toString());
             if (StringUtils.isBlank(data.getOrderNo()) || StringUtils.isBlank(data.getRoomNo())) {
@@ -233,10 +238,80 @@ public class ReserveRoomInfoServiceImpl implements ReserveRoomInfoService {
         } catch (BizInfoErrorException e) {
             log.error("chancelRoom, biz info error.", e);
             throw new BizInfoErrorException("biz info error");
+        } catch (Exception e) {
+            log.error("chancelRoom occur exception", e);
+            throw new InnerErrorException();
         }
     }
 
+    @Override
+    public List<ReserveVO> queryAll(int page, int size, String status) throws InnerErrorException {
+        try {
+            log.info("queryAll, page={}, size={}", page, size);
+            if (page < 0 || size <= 0) {
+                log.error("param error.");
+                return null;
+            }
+            int count = reserveRoomInfoMapper.queryByStatus(status).size();
+            PageHelper.startPage(page, size);
+            List<ReserveRoomInfoDO> reserveRoomInfoDOS = reserveRoomInfoMapper.queryByStatus(status);
+            if (reserveRoomInfoDOS == null) {
+                log.info("queryAll, there is no data.");
+                return null;
+            }
+            return reserveRoomInfoDOS.stream().map(temp -> ReserveVO.builder()
+                    .orderNo(temp.getOrderNo())
+                    .reserveDay(temp.getReserveDay())
+                    .reserveTime(temp.getReserveTime())
+                    .reserveStatus(temp.getReserveStatus())
+                    .customerInfo(JSONArray.parseArray(temp.getCustomerInfo(), CustomerInfoPojo.class))
+                    .operateCp(temp.getOperateCp())
+                    .operateTime(temp.getOperateTime())
+                    .count(count)
+                    .build()
+            ).collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("queryAll occur exception", e);
+            throw new InnerErrorException();
+        }
+    }
 
+    @Override
+    public ReserveVO queryDynamic(String paramType, String param) throws InnerErrorException {
+        try {
+            log.info("queryDynamic, paramType={}, param={}", paramType, param);
+            if (StringUtils.isBlank(param) || StringUtils.isBlank(paramType)) {
+                log.error("queryDynamic, param error");
+                return null;
+            }
+            ReserveRoomInfoDO reserveRoomInfoDO = null;
+            if (paramType.equals(UniversalConstant.RESERVE_INFO_QUERY_PARAM_TYPE_ORDER_NO)) {
+                reserveRoomInfoDO = reserveRoomInfoMapper.queryByOrderNo(param);
+            } else if (paramType.equals(UniversalConstant.RESERVE_INFO_QUERY_PARAM_TYPE_ROOM_NO)) {
+                reserveRoomInfoDO = reserveRoomInfoMapper.queryByRoomNoAndStatus(param, UniversalConstant.ROOM_OPERATE_STATUS_RESERVE);
+            } else {
+                log.error("queryDynamic, type error.paramType={}, param={}", paramType, param);
+                return null;
+            }
+            if (reserveRoomInfoDO == null) {
+                log.info("queryDynamic, result is null");
+                return null;
+            }
+            return ReserveVO.builder()
+                    .orderNo(reserveRoomInfoDO.getOrderNo())
+                    .roomNo(reserveRoomInfoDO.getReserveRoomNo())
+                    .reserveDay(reserveRoomInfoDO.getReserveDay())
+                    .reserveTime(reserveRoomInfoDO.getReserveTime())
+                    .customerInfo(JSONArray.parseArray(reserveRoomInfoDO.getCustomerInfo(), CustomerInfoPojo.class))
+                    .reserveStatus(reserveRoomInfoDO.getReserveStatus())
+                    .operateCp(reserveRoomInfoDO.getOperateCp())
+                    .operateTime(reserveRoomInfoDO.getOperateTime())
+                    .build();
+        }catch (Exception e) {
+            log.error("queryDynamic occur exception", e);
+            throw new InnerErrorException();
+        }
+    }
 
 
 }

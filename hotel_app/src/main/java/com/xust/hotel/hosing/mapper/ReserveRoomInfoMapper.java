@@ -4,6 +4,8 @@ import com.xust.hotel.acl_pojo.dbo.ReserveRoomInfoDO;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * <p>
  * 预定信息单 Mapper 接口
@@ -43,6 +45,17 @@ public interface ReserveRoomInfoMapper {
      */
     @Select("select * from reserve_room_info where order_no = #{orderNo}")
     ReserveRoomInfoDO queryByOrderNo(String orderNo);
+
+    @Select("select * from reserve_room_info where reserve_room_no = #{roomNo} and reserve_status = #{status}")
+    ReserveRoomInfoDO queryByRoomNoAndStatus(String roomNo, String status);
+
+    /**
+     * query by status
+     * @param status
+     * @return
+     */
+    @Select("select * from reserve_room_info where reserve_status=#{status}")
+    List<ReserveRoomInfoDO> queryByStatus(String status);
 
     /**
      * update reserve info
