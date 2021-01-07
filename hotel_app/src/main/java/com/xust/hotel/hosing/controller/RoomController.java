@@ -131,7 +131,7 @@ public class RoomController {
             log.error("all, param error.page={}, size={}", page, size);
             return new Result(true, StatusEnum.PARAM_ERROR, "page:" + page + ", size={}" + size, null);
         }
-        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN, JwtConstantConfig.USER_ROLE_NORMAL)) {
             log.error("all, access error.");
             return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
         }
@@ -248,7 +248,7 @@ public class RoomController {
             log.error("allGuest, param error.page={}, size={}", page, size);
             return new Result(true, StatusEnum.PARAM_ERROR, "param error", null);
         }
-        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN, JwtConstantConfig.USER_ROLE_NORMAL)) {
             log.error("deleteGuest, access error.");
             return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
         }
@@ -263,7 +263,7 @@ public class RoomController {
             log.error("getGuest, roomNo is null.");
             return new Result(true, StatusEnum.PARAM_ERROR, "roomNo is null", null);
         }
-        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN)) {
+        if (!AccessUtil.checkAccess(request, JwtConstantConfig.USER_ROLE_ADMIN, JwtConstantConfig.USER_ROLE_NORMAL)) {
             log.error("deleteGuest, access error.");
             return new Result(true, StatusEnum.ACCESS_ERROR, null, null);
         }
